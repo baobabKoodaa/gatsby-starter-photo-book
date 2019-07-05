@@ -1,15 +1,11 @@
 import React from "react"
 
 import Layout from "../components/layout"
-import SEO from "../components/seo"
 
 const SecondPage = (props) => (
   <Layout>
-    <SEO title="Second Page" />
     <center>
       <br/><br/>
-
-      <p>This page exists to demonstrate behavior when you click back (infinite scroll state is maintained).</p>
 
       {props.location.state && props.location.state.img &&
         <img

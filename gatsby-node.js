@@ -4,21 +4,6 @@ const fs = require('fs');
 exports.createPages = ({ graphql, actions}) => {
     const { createPage } = actions
 
-    /* 
-     * There are a few local images in this repo to show you how to fetch images with GraphQL.
-     * In order to keep the repo small, the rest of the images are fetched from Unsplash by the client's
-     * browser. Their URLs are stored in a text file. You don't want to fetch images like that in production.
-     */
-    var rawRemoteUrls = JSON.parse(fs.readFileSync('content/images/remote_image_urls.json', 'utf8'));
-    const remoteImages = rawRemoteUrls.map(url => {
-        const resizeParams = '?q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=300&h=300&fit=crop'
-        return {
-            "l": url,
-            "s": url+resizeParams
-        }
-    })
-
-    /* In production you should fetch your images with GraphQL like this: */
     return graphql(`
         {
             localImages: allFile(
@@ -46,14 +31,12 @@ exports.createPages = ({ graphql, actions}) => {
             throw result.errors
         }
 
-        const localImages = result.data.localImages.edges.map(edge => {
+        const images = result.data.localImages.edges.map(edge => {
             return {
                 "l": edge.node.childImageSharp.fluid.originalImg,
                 "s": edge.node.childImageSharp.fixed.src
             }
         })
-
-        const images = [...localImages, ...remoteImages]
 
         /* Gatsby will use this template to render the paginated pages (including the initial page for infinite scroll). */
         const paginatedPageTemplate = path.resolve(`src/templates/paginatedPageTemplate.js`)
