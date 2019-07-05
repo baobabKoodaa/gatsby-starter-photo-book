@@ -7,15 +7,10 @@ const GridItem = props => {
         <React.Fragment>
             <div className="img-container" key={props.index}>
 
-                {props.item && props.js && (
-                    <Link to="/second" state={{img: props.item.l}}>
+                {props.item && (
+                    <Link to={`/images/${props.item.id}`}>
                         <img src={props.item.s} alt="" title="" />
                     </Link>
-                )}
-                {props.item && !props.js && (
-                    <a href={props.item.l} target="_blank">
-                        <img src={props.item.s} alt="" title="" />
-                    </a>
                 )}
                 
             </div>
@@ -24,6 +19,7 @@ const GridItem = props => {
                     .img-container {
                         position: relative;
                         width:100%;
+                        height:100%;
                         background:#EEE;
                         border-radius: 5px;
                         border: 1px solid ghostwhite;
@@ -34,7 +30,7 @@ const GridItem = props => {
                     .img-container::before {
                         content: '';
                         display: block;
-                        margin-top: 100%;
+                        margin-top: 67%;
                         z-index: 1;
                     }
 

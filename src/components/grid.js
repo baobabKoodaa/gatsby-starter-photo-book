@@ -53,7 +53,8 @@ const Grid = (props) => {
                 {`
                     .grid {
                         display: grid;
-                        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                        grid-template-rows: repeat(5, auto);
                         grid-gap: 1px;
                     }
 

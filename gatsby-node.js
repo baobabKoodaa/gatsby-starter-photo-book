@@ -15,7 +15,7 @@ exports.createPages = ({ graphql, actions}) => {
                 edges {
                     node {
                         childImageSharp {
-                            fixed(quality: 95, width: 300, height: 300) {
+                            fixed(quality: 95, width: 450, height: 300, cropFocus: NORTH) {
                                 src
                             }
                             fluid {
@@ -31,8 +31,9 @@ exports.createPages = ({ graphql, actions}) => {
             throw result.errors
         }
 
-        const images = result.data.localImages.edges.map(edge => {
+        const images = result.data.localImages.edges.map((edge,i) => {
             return {
+                "id": i+1,
                 "l": edge.node.childImageSharp.fluid.originalImg,
                 "s": edge.node.childImageSharp.fixed.src
             }
@@ -57,7 +58,6 @@ exports.createPages = ({ graphql, actions}) => {
                 path: `/${pathSuffix}`, 
                 component: paginatedPageTemplate,
                 context: {
-                     /* If you need to pass additional data, you can pass it inside this context object. */
                     pageImages: pageImages,
                     currentPage: currentPage,
                     countPages: countPages
@@ -70,6 +70,22 @@ exports.createPages = ({ graphql, actions}) => {
         }
         console.log(`\nCreated ${countPages} pages of paginated content.`)
 
+        /* Create pages for images, too. */
+        for (var currId=1; currId<=images.length; currId++) {
+            const prevId = (currId == 1 ? images.length : currId-1)
+            const nextId = (currId >= images.length ? 1 : currId+1)
+            const pageData = {
+                path: `/images/${currId}`, 
+                component: path.resolve(`src/templates/imagePageTemplate.js`),
+                context: {
+                    image: images[currId-1],
+                    nextId: nextId,
+                    prevId: prevId,
+                    prefetchURL: images[nextId-1].l
+                }
+            }
+            createPage(pageData)
+        }
 
     })
 }

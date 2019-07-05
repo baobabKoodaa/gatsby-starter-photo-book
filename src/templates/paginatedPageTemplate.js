@@ -12,6 +12,12 @@ class PaginatedPageTemplate extends React.Component {
                     {globalState => (
                         <>
                             <View globalState={globalState} pageContext={this.props.pageContext} />
+
+                            <footer>
+                                <br/><br/>
+                                <center><small>Download photoset | Website source | Photographer</small></center>
+                                <br/>
+                            </footer>
                         </>
                     )}
                 </GlobalStateContext.Consumer>

@@ -32,17 +32,13 @@ class Layout extends React.Component {
                   style={{
                     margin: `0 auto`,
                     maxWidth: "100vw",
-                    padding: `0px 0px 1.45rem`,
+                    padding: `0px 0px 0px`,
                     paddingTop: 0,
                     paddingLeft: "2px",
                     paddingRight: "2px"
                   }}
                 >
                   <main>{this.props.children}</main>
-                  <footer>
-                    <br/><br/>
-                    <center><small>This website is open source.</small></center>
-                  </footer>
                 </div>
               </>
         )}
