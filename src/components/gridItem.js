@@ -18,9 +18,9 @@ const GridItem = props => {
                 {`
                     .img-container {
                         position: relative;
-                        width:100%;
-                        height:100%;
-                        background:#EEE;
+                        width: 100%;
+                        height: 100%;
+                        background: #EEE;
                         border-radius: 5px;
                         border: 1px solid ghostwhite;
                         overflow: hidden;

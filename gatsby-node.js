@@ -10,15 +10,20 @@ exports.createPages = ({ graphql, actions}) => {
                 filter: {
                     extension: {regex: "/(jpeg|jpg|png)/"},
                     sourceInstanceName: {eq: "images"}
+                },
+                sort: {
+                    fields: [absolutePath]
+                    order: [ASC]
                 }
             ) {
                 edges {
                     node {
+                        absolutePath
                         childImageSharp {
                             fixed(quality: 95, width: 450, height: 300, cropFocus: NORTH) {
                                 src
                             }
-                            fluid {
+                            fluid(quality: 90) {
                                 originalImg
                             }
                         }
@@ -32,10 +37,13 @@ exports.createPages = ({ graphql, actions}) => {
         }
 
         const images = result.data.localImages.edges.map((edge,i) => {
+            const splitted = edge.node.absolutePath.split(".")
+            const title = splitted[splitted.length-2].endsWith("_v") ? "Photographed by our wonderful guests" : "Hannu Tiainen Photography"
             return {
                 "id": i+1,
                 "l": edge.node.childImageSharp.fluid.originalImg,
-                "s": edge.node.childImageSharp.fixed.src
+                "s": edge.node.childImageSharp.fixed.src,
+                "title": title
             }
         })
 

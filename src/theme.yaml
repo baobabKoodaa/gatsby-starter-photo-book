@@ -60,10 +60,10 @@ color:
     black: '#000000'
   
   brand:
-    primary: &color-brand-primary '#E39E22' #'#07889B' #'#C0B283' #'#856084' #'#616247'
+    primary: &color-brand-primary '#e8ca6f' #'#E39E22' #'#07889B' #'#C0B283' #'#856084' #'#616247'
     primaryLight: '#f9ebd2'
     primaryDark: '#B67A0E'
-    hover: &color-brand-hover '#C09F80' #'#E37222' #'#DCD0C0' #'#9f7a9d'
+    background: '#fcf7e9'
     primaryActive: '#709425'
     light: '#709425'
     lightActive: '#709425'
