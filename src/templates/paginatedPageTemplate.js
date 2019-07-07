@@ -19,7 +19,15 @@ class PaginatedPageTemplate extends React.Component {
 		this.setState({
 			showMoreText: !this.state.showMoreText
 		});
-	}
+    }
+    
+    componentDidUpdate(prevProps, prevState) {
+        /* The toggle action shows text under footer, so we want to scroll down to see the text.
+         * It's not a big jump; the text appears right under the link that the user clicked. */
+        if (!prevState.showMoreText && this.state.showMoreText) {
+            window.scrollTo(0, 100000);
+        }
+    }
 
     render() {
         const highlight = (this.props.location && this.props.location.state ? this.props.location.state.highlight : -1)
