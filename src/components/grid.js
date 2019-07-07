@@ -56,7 +56,7 @@ const Grid = (props) => {
                         grid-gap: 1px;
                     }
 
-                    @media (max-width: 800px) {
+                    @media (max-width: 950px) {
                         .grid {
                           grid-template-columns: 1fr 1fr 1fr;
                         }
