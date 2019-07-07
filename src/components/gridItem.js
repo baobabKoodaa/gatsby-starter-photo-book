@@ -27,6 +27,11 @@ const GridItem = props => {
             </div>
             <style jsx>
                 {`
+                    @keyframes animate-opacity {
+                        0% { opacity: 0; }
+                        100% { opacity: 1; }
+                    }
+
                     .img-container {
                         box-sizing: border-box;
                         -moz-box-sizing: border-box;
@@ -34,11 +39,12 @@ const GridItem = props => {
                         position: relative;
                         width: 100%;
                         height: 100%;
-                        background: ${highlight ? theme.color.brand.primaryLight : "#EEE"};
+                        background: #EEE;
                         border-radius: 5px;
                         border: 1px solid ghostwhite;
                         overflow: hidden;
                         z-index: 1;
+                        animation: ${highlight ? "3s" : "0s"} ease-in-out 0s 1 animate-opacity;
                     }
 
                     .img-container::before {
@@ -60,7 +66,7 @@ const GridItem = props => {
                         transition: 0.2s ease-in-out;
                         z-index: 2;
 
-                        opacity: ${highlight ? 0.2 : 1};
+                        opacity: 1;
                         :hover {
                             opacity: 0.4;
                             transform: scale(1.1);
