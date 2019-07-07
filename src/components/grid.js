@@ -16,7 +16,7 @@ const Grid = (props) => {
                 /* Add gridItems that we have received metadata for. */
                 numberOfItemsOnLatestPage = g[key].length
                 for (j=0; j<numberOfItemsOnLatestPage; j++) {
-                    items.push(<GridItem js={js} item={g[key][j]} key={"gi"+(i++)}/>)
+                    items.push(<GridItem js={js} item={g[key][j]} key={"gi"+(i++)} highlight={props.highlight} />)
                 }
             }
             else {

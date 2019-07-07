@@ -40,7 +40,7 @@ class View extends React.Component {
                 >
 
                     {/* Grid given as a child element for Infinite Scroll. */}
-                    <Grid globalState={g} pageContext={pageContext} />
+                    <Grid globalState={g} pageContext={pageContext} highlight={this.props.highlight} />
                     
                 </InfiniteScroll>
 

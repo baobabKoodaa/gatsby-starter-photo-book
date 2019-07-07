@@ -4,7 +4,6 @@ import { GlobalStateContext } from "../components/globalState.js"
 import View from "../components/view.js"
 import "../components/layout.css"
 import 'typeface-open-sans/index.css'
-import "./tooltip.css"
 //import theme from "../theme.yaml"
 
 class PaginatedPageTemplate extends React.Component {
@@ -23,6 +22,7 @@ class PaginatedPageTemplate extends React.Component {
 	}
 
     render() {
+        const highlight = (this.props.location && this.props.location.state ? this.props.location.state.highlight : -1)
         return (
                 <GlobalStateContext.Consumer>
                     {globalState => (
@@ -31,7 +31,11 @@ class PaginatedPageTemplate extends React.Component {
                                 <meta charSet="utf-8" />
                                 <title>Atte ja Marianne 11.5.2019</title>
                             </Helmet>
-                            <View globalState={globalState} pageContext={this.props.pageContext} />
+                            <View
+                                globalState={globalState}
+                                pageContext={this.props.pageContext}
+                                highlight={highlight}
+                            />
 
                             <footer>
                                 <br/><br/>
