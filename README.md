@@ -13,6 +13,7 @@ Fork and `npm install`. Run in dev mode with `gatsby develop`. Just drop your ph
 - Beautiful, responsive "postcard" view for desktop users, compact view for mobile users.
 - Infinite scroll photos on home page, presented on a responsive CSS grid with minimal whitespace.
 - While the user looks at a photo, the next photo is being prefetched so it can be delivered instantly.
+- When the user returns from a photo to front page, scroll position is set to the thumbnail of the last photo they viewed and a visual indicator is given.
 - Friendly to users who have disabled JS. All important features have a non JS fallback.
 
 ## Known issues

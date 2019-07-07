@@ -22,8 +22,6 @@ export class GlobalState extends React.Component {
     constructor(props) {
         super(props)
 
-        console.log("*** Constructing Global State ***")
-
         this.toggle = this.toggle.bind(this)
         this.loadMore = this.loadMore.bind(this)
         this.hasMore = this.hasMore.bind(this)
@@ -51,7 +49,6 @@ export class GlobalState extends React.Component {
     }
 
     loadMore = () => {
-        console.log("Fetching metadata for page " + this.state.cursor)
         const pageNum = this.state.cursor
         this.setState(state => ({ cursor: state.cursor+1 })) // TODO: make sure this is guaranteed to set state before another loadMore may be able to fire!
         fetch(`/paginationJson/index${pageNum}.json`)

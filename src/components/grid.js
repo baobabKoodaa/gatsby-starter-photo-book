@@ -42,8 +42,6 @@ const Grid = (props) => {
         props.pageContext.pageImages.forEach(item => items.push(<GridItem item={item} key={"gi"+(i++)}/>))
     }
 
-    console.log("Rendering " + i + " gridItems.")
-
     return (
         <>
             <div className="grid">
