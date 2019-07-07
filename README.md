@@ -2,7 +2,7 @@
   Gatsby Starter Photo Book
 </h1>
 
-Hi, I made this starter to share my wedding pictures. This is a fork of my other project [Gatsby Starter Infinite Scroll](https://github.com/baobabKoodaa/gatsby-starter-infinite-scroll), which is more of a general purpose infinite scroll starter. This one is specialized for sharing photosets. 
+Hi, I created this because I wanted to share our wedding pictures on a fast & beautiful user-friendly website. This is a fork of my other project [Gatsby Starter Infinite Scroll](https://github.com/baobabKoodaa/gatsby-starter-infinite-scroll), which is more of a general purpose infinite scroll starter. This one is specialized for sharing photosets. 
 
 ## Get started
 

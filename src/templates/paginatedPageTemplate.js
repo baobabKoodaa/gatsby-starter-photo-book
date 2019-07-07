@@ -43,7 +43,7 @@ class PaginatedPageTemplate extends React.Component {
                                     <p>
                                         <a href="https://drive.google.com/file/d/1XYZu3c6Z0XQ8nLFWIW2SuWVGNKmaYQGA/view?usp=sharing" target="_blank" rel="noopener noreferrer">
                                             Lataa kuvat 
-                                        </a> | <a href="https://github.com/baobabKoodaa/wedding-photos" target="_blank" rel="noopener noreferrer">
+                                        </a> | <a href="https://github.com/baobabKoodaa/gatsby-starter-photo-book" target="_blank" rel="noopener noreferrer">
                                             Sivun lähdekoodi
                                         </a> | <span onClick={this.toggle.bind(this)} style={{ cursor: "pointer" }}>
                                             Kameran takana
