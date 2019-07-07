@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "gatsby"
-import theme from "../theme.yaml"
+//import theme from "../theme.yaml"
 
 const GridItem = props => {
 

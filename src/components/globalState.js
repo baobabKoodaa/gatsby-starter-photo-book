@@ -8,13 +8,12 @@ import React from "react"
  * back and the state resets, which obviously resets scroll position as well.
  */
 export const GlobalStateContext = React.createContext({
-    cursor: 0, /* Which page infinite scroll should fetch next. */
-    useInfiniteScroll: true, /* Toggle between pagination and inf. scroll for this demo & fallback in case of error. */
+    cursor: 1, /* Which page infinite scroll should fetch next. */
+    useInfiniteScroll: true, /* Fallback to pagination in case of error. */
     isInitializing: () => {},
     updateState: () => {},
     hasMore: () => {},
-    loadMore: () => {},
-    toggle: () => {},
+    loadMore: () => {}
 });
 
 export class GlobalState extends React.Component {
@@ -22,7 +21,6 @@ export class GlobalState extends React.Component {
     constructor(props) {
         super(props)
 
-        this.toggle = this.toggle.bind(this)
         this.loadMore = this.loadMore.bind(this)
         this.hasMore = this.hasMore.bind(this)
         this.updateState = this.updateState.bind(this)
@@ -30,18 +28,17 @@ export class GlobalState extends React.Component {
         
         /* State also contains metadata for items, e.g. state["page81"] (only contains keys for _received_ metadata) */
         this.state = {
-            cursor: 0,
+            cursor: 1,
             useInfiniteScroll: true,
             isInitializing: this.isInitializing,
             updateState: this.updateState,
             hasMore: this.hasMore,
-            loadMore: this.loadMore,
-            toggle: this.toggle
+            loadMore: this.loadMore
         }
     }
 
     isInitializing = () => {
-        return (this.state.cursor === 0)
+        return (this.state.cursor === 1)
     }
 
     updateState = (mergeableStateObject) => {
@@ -51,7 +48,7 @@ export class GlobalState extends React.Component {
     loadMore = () => {
         const pageNum = this.state.cursor
         this.setState(state => ({ cursor: state.cursor+1 })) // TODO: make sure this is guaranteed to set state before another loadMore may be able to fire!
-        fetch(`/paginationJson/index${pageNum}.json`)
+        fetch(`/paginationJson/index${pageNum > 1 ? pageNum : ""}.json`)
           .then(res => res.json())
           .then(
             res => {
@@ -60,6 +57,7 @@ export class GlobalState extends React.Component {
               })
             },
             error => {
+                console.log("Error: " + error)
               this.setState({
                 useInfiniteScroll: false // Fallback to Pagination on error.
               })
@@ -71,28 +69,6 @@ export class GlobalState extends React.Component {
         if (!this.state.useInfiniteScroll) return false
         if (this.isInitializing()) return true
         return this.state.cursor <= pageContext.countPages
-    }
-
-    /** This exists to demo toggling. You will not need this in production. */
-    toggle(useInfiniteScroll, pageContext) {
-        if (useInfiniteScroll) {
-            /* Toggle back to infinite scroll, adjust scroll position. Otherwise we might load 1000s of items at once. */
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            window.scrollTo(0, scrollTop-1);
-            this.setState({
-                useInfiniteScroll: true
-            })
-        } else {
-            /* Toggle back to pagination, reset items and cursor. */
-            const state = {}
-            for (var i=this.state.cursor-1; i>=0; i--) {
-                state['page'+i] = undefined
-            }
-            state['page'+pageContext.currentPage] = pageContext.pageImages
-            state['cursor'] = pageContext.currentPage+1
-            state['useInfiniteScroll'] = false
-            this.setState(state)
-        }
     }
 
     render() {

@@ -4,6 +4,7 @@ import { Link } from "gatsby"
 import theme from "../theme.yaml"
 import { FaTimesCircle, FaArrowCircleLeft, FaArrowCircleRight } from 'react-icons/fa';
 import { GlobalStateContext } from "../components/globalState.js"
+import { CornerCaseHandler } from "../components/cornerCaseHandler.js"
 
 class ImagePageTemplate extends React.Component {
 
@@ -14,11 +15,12 @@ class ImagePageTemplate extends React.Component {
       <GlobalStateContext.Consumer>
         {globalState => (
             <>
+                <CornerCaseHandler g={globalState} currId={c.image.id}/>
                 <Helmet>
                   <meta charSet="utf-8" />
                   <title>{`Photo ${c.image.id}`}</title>
 
-                  {/* Preload (modern browsers) or prefetch the next image to provide blazing fast UX! */}
+                  {/* Preload (modern browsers) or prefetch the next image so it's loaded when the user wants to navigate to it. */}
                   <link rel="prefetch" href={c.prefetchURL} as="image" />
                   <link rel="preload" href={c.prefetchURL} as="image" />
                   
