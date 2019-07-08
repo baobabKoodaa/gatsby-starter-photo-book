@@ -52,11 +52,11 @@ class PostcardTemplate extends React.Component {
                   
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
-                  <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} >
-                        <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: 2 }}></span>
+                  <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} onContextMenu={"return false;"} >
+                        <span style={{ position: "fixed", height: "100%", width: "25%", left: "0px", zIndex: 2 }}></span>
                   </Link>
-                  <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} >
-                        <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: 2 }}></span>
+                  <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} onContextMenu={"return false;"} >
+                        <span style={{ position: "fixed", height: "100%", width: "25%", right: "0px", zIndex: 2 }}></span>
                   </Link>
 
                   {/* Visual cues that the user can navigate to prev/next.
