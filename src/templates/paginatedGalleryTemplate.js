@@ -4,6 +4,8 @@ import { GlobalStateContext } from "../components/globalState.js"
 import View from "../components/view.js"
 import "../components/layout.css"
 import 'typeface-open-sans/index.css'
+import { FullScreenHandler } from "../components/fullScreenHandler.js"
+
 //import theme from "../theme.yaml"
 
 class PaginatedGalleryTemplate extends React.Component {
@@ -39,6 +41,9 @@ class PaginatedGalleryTemplate extends React.Component {
                                 <meta charSet="utf-8" />
                                 <title>Atte ja Marianne 11.5.2019</title>
                             </Helmet>
+                            <FullScreenHandler>
+                            </FullScreenHandler>
+
                             <View
                                 globalState={globalState}
                                 pageContext={this.props.pageContext}
