@@ -41,7 +41,7 @@ class PaginatedGalleryTemplate extends React.Component {
                                 <meta charSet="utf-8" />
                                 <title>Atte ja Marianne 11.5.2019</title>
                             </Helmet>
-                            <FullScreenHandler>
+                            <FullScreenHandler view="gallery" >
                             </FullScreenHandler>
 
                             <View

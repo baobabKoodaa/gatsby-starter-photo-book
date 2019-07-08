@@ -6,35 +6,23 @@ export class FullScreenHandler extends React.Component {
 
     constructor(props) {
         super(props)
-        this.enterFullScreen.bind(this)
-        this.exitFullScreen.bind(this)
+        this.getWidth.bind(this)
         this.state = {
-            fullScreen: props.fullScreen
+            view: props.view
         }
     }
 
-    enterFullScreen() {
-        if (typeof document === 'undefined') return
-        var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        if (width <= 1200 && screenfull.enabled) {
-            screenfull.request();
-        }
-    }
-
-    exitFullScreen() {
-        if (typeof document === 'undefined') return
-        var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        if (width <= 1200 && screenfull.enabled) {
-            screenfull.exit()
-        }
+    getWidth() {
+        return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     }
 
     render() {
-        if (this.state.fullScreen) this.enterFullScreen()
-        else this.exitFullScreen()
-
-        return (
-            <></>
-        )
+        if (typeof document === 'undefined' || !screenfull.enabled) return <></>
+        if (this.state.view === 'postcard' && this.getWidth() <= 1200) {
+            screenfull.request()
+        } else {
+            screenfull.exit()
+        }
+        return <></>
     }
 }

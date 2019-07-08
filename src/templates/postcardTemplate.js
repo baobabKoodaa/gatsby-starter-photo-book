@@ -48,7 +48,7 @@ class PostcardTemplate extends React.Component {
                     `}
                   </style>
                 </Helmet>
-                <FullScreenHandler fullScreen={true} >
+                <FullScreenHandler view="postcard" >
                 </FullScreenHandler>
 
                 {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
