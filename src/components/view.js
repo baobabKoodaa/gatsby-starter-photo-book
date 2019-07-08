@@ -45,7 +45,7 @@ class View extends React.Component {
                 </InfiniteScroll>
 
                 {/* Loading spinner. */}
-                {(g.cursor === 0 || g.hasMore(pageContext)) && (
+                {(g.cursor === 1 || g.hasMore(pageContext)) && (
                     <div className="spinner">
                         <FaCog/>
                     </div>
