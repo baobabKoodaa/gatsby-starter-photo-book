@@ -4,7 +4,7 @@
 
 ## :notebook: Features
 
-- **Gallery**: thumbnails presented on **CSS Grid** with **infinite scroll**.
+- **Gallery**: auto-generated thumbnails are presented on **CSS Grid** with **infinite scroll**.
 - Beautiful **"postcard" view** for photos.
 - Both views are **responsive** with **minimal whitespace**.
 - **Lightning fast**: while the user looks at a photo, the next photo is being prefetched so it can be delivered instantly. Gallery doesn't make you wait either; infinite scroll activates and loads more items _before_ you scroll all the way down.
@@ -22,7 +22,7 @@ For example, infinite scroll **gracefully degrades** into pagination.
 
 ## :sparkles: Tips
 
-- Thumbnails are generated automatically, with cropping. Set the aspect ratio in `gatsby-node.js` to whichever aspect ratio is most common in your photoset. If many of your photos need cropping (=are not the desired aspect ratio), you will probably want to tweak your crops. You can change the crop mode (NORTH, CENTER and ATTENTION work the best). You can also manually pre-crop some photos: make a copy of your photo, crop it approximately to the desired aspect ratio, and the Photo Book will then create thumbnail by cropping your pre-cropped photo. You need to use this naming convention: if your original photo is `cat.jpg`, name the pre-cropped photo `cat_crophelper.jpg`.
+- Thumbnails are generated automatically, with cropping. Set the aspect ratio in `gatsby-node.js` to whichever aspect ratio is most common in your photoset. If many of your photos need cropping (=are not the desired aspect ratio), you will probably want to tweak your crops. You can change the crop mode (NORTH, CENTER and ATTENTION work the best). You can also manually pre-crop some photos: make a copy of your photo, crop it approximately to the desired aspect ratio, and the Photo Book will then create the thumbnail by cropping your pre-cropped photo. Why crop 2 times? To save your time and nerves (making approximate crops by hand is faster than making exact crops). You need to use this naming convention: if your original photo is `cat.jpg`, name the pre-cropped photo `cat_crophelper.jpg`.
 
 ## 🎓 Attribution
 

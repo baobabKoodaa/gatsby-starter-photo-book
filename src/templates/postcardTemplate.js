@@ -18,11 +18,12 @@ class PostcardTemplate extends React.Component {
           <meta charSet="utf-8" />
           <title>{`Photo ${c.image.id}`}</title>
 
-          {/* Preload (modern browsers) or prefetch the next 2 images. */}
-          <link rel="prefetch" href={c.prefetchURL1} as="image" />
-          <link rel="preload" href={c.prefetchURL1} as="image" />
-          <link rel="prefetch" href={c.prefetchURL2} as="image" />
-          <link rel="preload" href={c.prefetchURL2} as="image" />
+          {/* Attempting to get the browser to prioritize current image above next 2 images. */}
+          <link rel="preload" href={c.image.l} as="image" importance="high" />
+
+          {/* Prefetch the next 2 images (unfortunately appears to steal some bandwidth from current image, still.) */}
+          <link rel="prefetch" href={c.prefetchURL1} as="image" importance="low" />
+          <link rel="prefetch" href={c.prefetchURL2} as="image" importance="low" />
           
           <style>
             {/* 
@@ -85,6 +86,7 @@ class PostcardTemplate extends React.Component {
                     src={c.image.l}
                     alt=""
                     title={c.image.title}
+                    importance="high"
                   />
 
 
