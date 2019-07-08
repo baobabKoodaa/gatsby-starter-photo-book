@@ -90,6 +90,8 @@ class PostcardTemplate extends React.Component {
                   title={c.image.title}
                 />
 
+                <div style={{ position: "absolute", bottom: "-1px" , visibility: "hidden" }}>Height hack</div>
+
 
 
                 <style jsx>

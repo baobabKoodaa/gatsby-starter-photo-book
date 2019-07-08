@@ -23,7 +23,7 @@ exports.createPages = ({ graphql, actions}) => {
                             fixed(quality: 95, width: 450, height: 300, cropFocus: NORTH) {
                                 src
                             }
-                            fluid(quality: 85) {
+                            fluid(quality: 90) {
                                 originalImg
                             }
                         }
