@@ -20,9 +20,11 @@ class ImagePageTemplate extends React.Component {
                   <meta charSet="utf-8" />
                   <title>{`Photo ${c.image.id}`}</title>
 
-                  {/* Preload (modern browsers) or prefetch the next image so it's loaded when the user wants to navigate to it. */}
-                  <link rel="prefetch" href={c.prefetchURL} as="image" />
-                  <link rel="preload" href={c.prefetchURL} as="image" />
+                  {/* Preload (modern browsers) or prefetch the next 2 images. */}
+                  <link rel="prefetch" href={c.prefetchURL1} as="image" />
+                  <link rel="preload" href={c.prefetchURL1} as="image" />
+                  <link rel="prefetch" href={c.prefetchURL2} as="image" />
+                  <link rel="preload" href={c.prefetchURL2} as="image" />
                   
                   <style>
                     {/* 

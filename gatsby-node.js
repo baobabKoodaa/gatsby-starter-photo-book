@@ -23,7 +23,7 @@ exports.createPages = ({ graphql, actions}) => {
                             fixed(quality: 95, width: 450, height: 300, cropFocus: NORTH) {
                                 src
                             }
-                            fluid(quality: 90) {
+                            fluid(quality: 85) {
                                 originalImg
                             }
                         }
@@ -82,6 +82,7 @@ exports.createPages = ({ graphql, actions}) => {
         for (var currId=1; currId<=images.length; currId++) {
             const prevId = (currId == 1 ? images.length : currId-1)
             const nextId = (currId >= images.length ? 1 : currId+1)
+            const next2Id = (nextId >= images.length ? 1 : nextId+1)
             const pageData = {
                 path: `/images/${currId}`, 
                 component: path.resolve(`src/templates/imagePageTemplate.js`),
@@ -89,7 +90,8 @@ exports.createPages = ({ graphql, actions}) => {
                     image: images[currId-1],
                     nextId: nextId,
                     prevId: prevId,
-                    prefetchURL: images[nextId-1].l
+                    prefetchURL1: images[nextId-1].l,
+                    prefetchURL2: images[next2Id-1].l
                 }
             }
             createPage(pageData)
