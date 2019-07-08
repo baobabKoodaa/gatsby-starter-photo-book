@@ -58,9 +58,6 @@ export class GlobalState extends React.Component {
             },
             error => {
                 console.log("Error: " + error)
-              this.setState({
-                useInfiniteScroll: false // Fallback to Pagination on error.
-              })
             }
         )
     }

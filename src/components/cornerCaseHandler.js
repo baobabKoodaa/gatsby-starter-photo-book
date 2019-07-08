@@ -29,7 +29,10 @@ export class CornerCaseHandler extends React.Component {
         const g = this.state.g
         const lastFetchedPage = "page" + (g.cursor-1)
         if (!g[lastFetchedPage]) {
-            /* Another corner case: user enters postcard view without visiting gallery. */
+            /* Another corner case: user enters postcard view without visiting gallery.
+             * Note that we are not properly handling this case (we should fetch enough
+             * metadata up to whichever image the user is looking at - instead we only
+             * fetch 1 page worth of metadata items per each photo that the user views.) */
             g.loadMore()
             return
         }
@@ -38,8 +41,8 @@ export class CornerCaseHandler extends React.Component {
             /* This shouldn't happen but if it does we don't want to crash. */
             return
         }
-        if (p[p.length-1].id < (this.state.currId+1)) {
-            /* If we are almost at the lost photo with thumbnail metadata,
+        if (p[p.length-1].id < (this.state.nextId)) {
+            /* If we are almost at the last photo with thumbnail metadata,
             * then fetch more metadata (thumbnail _data_ will not be fetched yet). */
             g.loadMore()
         }
