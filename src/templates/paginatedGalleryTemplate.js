@@ -6,7 +6,7 @@ import "../components/layout.css"
 import 'typeface-open-sans/index.css'
 //import theme from "../theme.yaml"
 
-class PaginatedPageTemplate extends React.Component {
+class PaginatedGalleryTemplate extends React.Component {
 
     constructor(props) {
         super(props);
@@ -74,4 +74,4 @@ class PaginatedPageTemplate extends React.Component {
     }
 }
 
-export default PaginatedPageTemplate
+export default PaginatedGalleryTemplate

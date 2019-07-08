@@ -6,7 +6,7 @@ import { FaTimesCircle, FaArrowCircleLeft, FaArrowCircleRight } from 'react-icon
 import { GlobalStateContext } from "../components/globalState.js"
 import { CornerCaseHandler } from "../components/cornerCaseHandler.js"
 
-class ImagePageTemplate extends React.Component {
+class PostcardTemplate extends React.Component {
 
   render () {
     const c = this.props.pageContext
@@ -48,31 +48,41 @@ class ImagePageTemplate extends React.Component {
                   </style>
                 </Helmet>
 
-                {/* Navigation buttons. */}
-                <span className="x">
-                  <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }}>
-                    <FaTimesCircle className="x" style={{ right: "10px", top: "10px"}} />
-                  </Link>
-                </span>
+                {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
+                <Link to={`/images/${c.prevId}`}>
+                      <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: 2 }}></span>
+                </Link>
+                <Link to={`/images/${c.nextId}`}>
+                      <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: 2 }}></span>
+                </Link>
+
+                {/* Visual cues that the user can navigate to prev/next.
+                  * (Even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
                 <span className="arrows">
                   <Link to={`/images/${c.prevId}`}>
-                    <FaArrowCircleLeft style={{ left: "10px" }} />
+                    <FaArrowCircleLeft style={{ left: "10px", zIndex: 3 }} />
                   </Link>
                 </span>
                 <span className="arrows">
                   <Link to={`/images/${c.nextId}`}>
-                    <FaArrowCircleRight style={{ right: "10px" }} />
+                    <FaArrowCircleRight style={{ right: "10px", zIndex: 3 }} />
                   </Link>
                 </span>
 
+                {/* Top right 'x' to 'close' the image and return to gallery. */}
+                <span className="x">
+                  <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }}>
+                    <FaTimesCircle className="x" style={{ right: "10px", top: "10px", zIndex: 3 }} />
+                  </Link>
+                </span>
+
+
                 {/* Display current image. */}
-                <Link to={`/images/${c.nextId}`}>
-                  <img
-                    src={c.image.l}
-                    alt=""
-                    title={c.image.title}
-                  />
-                </Link>
+                <img
+                  src={c.image.l}
+                  alt=""
+                  title={c.image.title}
+                />
 
 
 
@@ -144,4 +154,4 @@ class ImagePageTemplate extends React.Component {
 }
 
 
-export default ImagePageTemplate
+export default PostcardTemplate

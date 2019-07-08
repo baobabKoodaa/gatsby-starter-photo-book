@@ -48,7 +48,7 @@ exports.createPages = ({ graphql, actions}) => {
         })
 
         /* Gatsby will use this template to render the paginated pages (including the initial page for infinite scroll). */
-        const paginatedPageTemplate = path.resolve(`src/templates/paginatedPageTemplate.js`)
+        const paginatedGalleryTemplate = path.resolve(`src/templates/paginatedGalleryTemplate.js`)
 
         /* Iterate needed pages and create them. */
         const countImagesPerPage = 20
@@ -64,7 +64,7 @@ exports.createPages = ({ graphql, actions}) => {
             /* Combine all data needed to construct this page. */
             const pageData = {
                 path: `/${pathSuffix}`, 
-                component: paginatedPageTemplate,
+                component: paginatedGalleryTemplate,
                 context: {
                     pageImages: pageImages,
                     currentPage: currentPage,
@@ -85,7 +85,7 @@ exports.createPages = ({ graphql, actions}) => {
             const next2Id = (nextId >= images.length ? 1 : nextId+1)
             const pageData = {
                 path: `/images/${currId}`, 
-                component: path.resolve(`src/templates/imagePageTemplate.js`),
+                component: path.resolve(`src/templates/postcardTemplate.js`),
                 context: {
                     image: images[currId-1],
                     nextId: nextId,
