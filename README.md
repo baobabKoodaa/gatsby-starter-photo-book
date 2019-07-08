@@ -20,10 +20,9 @@ For example, infinite scroll **gracefully degrades** into pagination.
 3. Run in dev mode with `gatsby develop`.  
 ...and you're all set! (Ok you probably want to edit some text, colors, favicon, etc. - but almost done!)
 
-## :beetle: Known issues
+## :sparkles: Tips
 
-- Automated photo cropping is used and it is what it is. You can manually crop some of the photos if you like.
-- Mobile users' compact view aligns photos to the top instead of vertically middle. It looks good but would be better with vertical alignment. TODO.
+- Thumbnails are generated automatically, with cropping. Set the aspect ratio in `gatsby-node.js` to whichever aspect ratio is most common in your photoset. If many of your photos need cropping (=are not the desired aspect ratio), you will probably want to tweak your crops. You can change the crop mode (NORTH, CENTER and ATTENTION work the best). You can also manually pre-crop some photos: make a copy of your photo, crop it approximately to the desired aspect ratio, and the Photo Book will then create thumbnail by cropping your pre-cropped photo. You need to use this naming convention: if your original photo is `cat.jpg`, name the pre-cropped photo `cat_crophelper.jpg`.
 
 ## 🎓 Attribution
 

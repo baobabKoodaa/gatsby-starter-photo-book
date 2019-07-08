@@ -63,19 +63,19 @@ class PostcardTemplate extends React.Component {
                     * (Even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
                   <span className="arrows">
                     <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} >
-                      <FaArrowCircleLeft style={{ left: "10px", zIndex: 3 }} />
+                      <FaArrowCircleLeft style={{ left: "10px", zIndex: 5 }} />
                     </Link>
                   </span>
                   <span className="arrows">
                     <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} >
-                      <FaArrowCircleRight style={{ right: "10px", zIndex: 3 }} />
+                      <FaArrowCircleRight style={{ right: "10px", zIndex: 5 }} />
                     </Link>
                   </span>
 
                   {/* Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
                     <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} >
-                      <FaTimesCircle className="x" style={{ right: "10px", top: "10px", zIndex: 3 }} />
+                      <FaTimesCircle className="x" style={{ right: "10px", top: "10px", zIndex: 5 }} />
                     </Link>
                   </span>
 

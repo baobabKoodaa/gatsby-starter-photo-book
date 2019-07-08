@@ -36,15 +36,39 @@ exports.createPages = ({ graphql, actions}) => {
             throw result.errors
         }
 
-        const images = result.data.localImages.edges.map((edge,i) => {
-            const splitted = edge.node.absolutePath.split(".")
-            const title = splitted[splitted.length-2].endsWith("_v") ? "Photographed by our wonderful guests" : "Hannu Tiainen Photography"
-            return {
-                "id": i+1,
+        /* Separate crop helpers from actual images. */
+        const edges = result.data.localImages.edges
+        const cropHelperEdges = {}
+        const imageEdges = []
+        edges.forEach(edge => {
+            const name = parseName(edge.node.absolutePath)
+            if (name.endsWith("_crophelper")) cropHelperEdges[name] = edge
+            else imageEdges.push(edge)
+        })
+
+        /* Create metadata JSON for actual images. */
+        var nextFreeId = 1
+        images = []
+        imageEdges.forEach(edge => {
+            const name = parseName(edge.node.absolutePath)
+            /* Infer photographer attribution from name. */
+            const title = name.endsWith("_v") ? "Photographed by our wonderful guests" : "Hannu Tiainen Photography"
+            
+            /* Use thumbnail from crop helper if that's available. */ 
+            const key = name+"_crophelper"
+            const thumb = (
+                cropHelperEdges[key] ?
+                cropHelperEdges[key].node.childImageSharp.fixed.src :
+                edge.node.childImageSharp.fixed.src
+            )
+
+            images[nextFreeId] = {
+                "id": nextFreeId,
                 "l": edge.node.childImageSharp.fluid.originalImg,
-                "s": edge.node.childImageSharp.fixed.src,
+                "s": thumb,
                 "title": title
             }
+            nextFreeId++
         })
 
         /* Gatsby will use this template to render the paginated pages (including the initial page for infinite scroll). */
@@ -52,12 +76,12 @@ exports.createPages = ({ graphql, actions}) => {
 
         /* Iterate needed pages and create them. */
         const countImagesPerPage = 20
-        const countPages = Math.ceil(images.length / countImagesPerPage)
+        const countPages = Math.ceil(nextFreeId / countImagesPerPage)
         for (var currentPage=1; currentPage<=countPages; currentPage++) {
             const pathSuffix = (currentPage>1? currentPage : "") /* To create paths "/", "/2", "/3", ... */
 
             /* Collect images needed for this page. */
-            const startIndexInclusive = countImagesPerPage * (currentPage - 1)
+            const startIndexInclusive = countImagesPerPage * (currentPage - 1) + 1
             const endIndexExclusive = startIndexInclusive + countImagesPerPage
             const pageImages = images.slice(startIndexInclusive, endIndexExclusive)
 
@@ -79,19 +103,19 @@ exports.createPages = ({ graphql, actions}) => {
         console.log(`\nCreated ${countPages} pages of paginated content.`)
 
         /* Create pages for images, too. */
-        for (var currId=1; currId<=images.length; currId++) {
-            const prevId = (currId == 1 ? images.length : currId-1)
-            const nextId = (currId >= images.length ? 1 : currId+1)
-            const next2Id = (nextId >= images.length ? 1 : nextId+1)
+        for (var currId=1; currId<nextFreeId; currId++) {
+            const prevId = (currId == 1 ? nextFreeId-1 : currId-1)
+            const nextId = (currId == nextFreeId-1 ? 1 : currId+1)
+            const next2Id = (nextId == nextFreeId-1 ? 1 : nextId+1)
             const pageData = {
                 path: `/images/${currId}`, 
                 component: path.resolve(`src/templates/postcardTemplate.js`),
                 context: {
-                    image: images[currId-1],
+                    image: images[currId],
                     nextId: nextId,
                     prevId: prevId,
-                    prefetchURL1: images[nextId-1].l,
-                    prefetchURL2: images[next2Id-1].l
+                    prefetchURL1: images[nextId].l,
+                    prefetchURL2: images[next2Id].l
                 }
             }
             createPage(pageData)
@@ -113,4 +137,9 @@ function createJSON(pageData) {
         return console.log(err);
       }
     }); 
+}
+
+function parseName(absolutePath) {
+    const splitted = absolutePath.split(".")
+    return splitted[splitted.length-2]
 }
