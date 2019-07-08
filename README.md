@@ -24,7 +24,6 @@ For example, infinite scroll **gracefully degrades** into pagination.
 
 - Automated photo cropping is used and it is what it is. You can manually crop some of the photos if you like.
 - Mobile users' compact view aligns photos to the top instead of vertically middle. It looks good but would be better with vertical alignment. TODO.
-- In dev mode only: fast scrolling sometimes causes "too many events" React error. Doesn't occur in production.
 
 ## 🎓 Attribution
 

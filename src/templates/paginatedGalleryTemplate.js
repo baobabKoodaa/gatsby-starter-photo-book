@@ -4,8 +4,7 @@ import { GlobalStateContext } from "../components/globalState.js"
 import View from "../components/view.js"
 import "../components/layout.css"
 import 'typeface-open-sans/index.css'
-import { FullScreenHandler } from "../components/fullScreenHandler.js"
-
+import { exitFullScreen } from "../util/fullScreenHelpers.js"
 //import theme from "../theme.yaml"
 
 class PaginatedGalleryTemplate extends React.Component {
@@ -22,6 +21,10 @@ class PaginatedGalleryTemplate extends React.Component {
 			showMoreText: !this.state.showMoreText
 		});
     }
+
+    componentDidMount() {
+        exitFullScreen()
+    }
     
     componentDidUpdate(prevProps, prevState) {
         /* The toggle action shows text under footer, so we want to scroll down to see the text.
@@ -32,17 +35,18 @@ class PaginatedGalleryTemplate extends React.Component {
     }
 
     render() {
+
         const highlight = (this.props.location && this.props.location.state ? this.props.location.state.highlight : -1)
-        return (
+        return (<>
+                <Helmet>
+                    <meta charSet="utf-8" />
+                    <title>Atte ja Marianne 11.5.2019</title>
+                </Helmet>
                 <GlobalStateContext.Consumer>
                     {globalState => (
                         <>
-                            <Helmet>
-                                <meta charSet="utf-8" />
-                                <title>Atte ja Marianne 11.5.2019</title>
-                            </Helmet>
-                            <FullScreenHandler view="gallery" >
-                            </FullScreenHandler>
+
+                            
 
                             <View
                                 globalState={globalState}
@@ -75,7 +79,7 @@ class PaginatedGalleryTemplate extends React.Component {
                         
                     )}
                 </GlobalStateContext.Consumer>
-        )
+        </>)
     }
 }
 

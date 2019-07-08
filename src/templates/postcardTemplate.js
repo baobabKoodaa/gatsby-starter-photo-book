@@ -5,7 +5,7 @@ import theme from "../theme.yaml"
 import { FaTimesCircle, FaArrowCircleLeft, FaArrowCircleRight } from 'react-icons/fa';
 import { GlobalStateContext } from "../components/globalState.js"
 import { CornerCaseHandler } from "../components/cornerCaseHandler.js"
-import { FullScreenHandler } from "../components/fullScreenHandler.js"
+import { maybeEnterFullScreen } from "../util/fullScreenHelpers.js"
 
 class PostcardTemplate extends React.Component {
 
@@ -48,33 +48,31 @@ class PostcardTemplate extends React.Component {
                     `}
                   </style>
                 </Helmet>
-                <FullScreenHandler view="postcard" >
-                </FullScreenHandler>
 
                 {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
-                <Link to={`/images/${c.prevId}`}>
+                <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} >
                       <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: 2 }}></span>
                 </Link>
-                <Link to={`/images/${c.nextId}`}>
+                <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} >
                       <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: 2 }}></span>
                 </Link>
 
                 {/* Visual cues that the user can navigate to prev/next.
                   * (Even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
                 <span className="arrows">
-                  <Link to={`/images/${c.prevId}`}>
+                  <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} >
                     <FaArrowCircleLeft style={{ left: "10px", zIndex: 3 }} />
                   </Link>
                 </span>
                 <span className="arrows">
-                  <Link to={`/images/${c.nextId}`}>
+                  <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} >
                     <FaArrowCircleRight style={{ right: "10px", zIndex: 3 }} />
                   </Link>
                 </span>
 
                 {/* Top right 'x' to 'close' the image and return to gallery. */}
                 <span className="x">
-                  <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }}>
+                  <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} >
                     <FaTimesCircle className="x" style={{ right: "10px", top: "10px", zIndex: 3 }} />
                   </Link>
                 </span>
