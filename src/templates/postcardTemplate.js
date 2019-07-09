@@ -11,9 +11,18 @@ class PostcardTemplate extends React.Component {
 
   constructor(props) {
     super(props)
+
+    /* If the user has had time to look at placeholder (e.g. first image that they open, or slow connection),
+     * then we want to transition from placeholder to real image. If the real image is already cached
+     * (e.g. subsequent images on fast internet connection), then we want to snap to real image. */
+    this.longTransitionDuration = 1000
+    this.snapTransitionDuration = 0
+    this.thresholdTimeToLookAtPlaceholder = 200
+
     this.state = {
       currentImageLoaded: false,
-      zIndexes: this.zIndexes()
+      zIndexes: this.zIndexes(),
+      userHasHadTimeToLookAtPlaceholder: false
     }
   }
 
@@ -22,10 +31,26 @@ class PostcardTemplate extends React.Component {
     const z = {}
     var next = 1
     z["prefetchedImages"] = next++
+    z["currentImagePlaceholder"] = next++
     z["currentImage"] = next++
     z["invisibleLinks"] = next++
     z["navButtons"] = next++
     return z
+  }
+
+  componentDidMount() {
+    this.timerID = setTimeout(
+      () => this.setState({
+        userHasHadTimeToLookAtPlaceholder: true
+      }),
+      this.thresholdTimeToLookAtPlaceholder
+    );
+  }
+
+  componentWillUnmount() {
+    if (this.timerID) {
+      clearTimeout(this.timerID)
+    }
   }
 
   render () {
@@ -104,6 +129,12 @@ class PostcardTemplate extends React.Component {
                     importance="high" /* Resource prioritization hint. */
                     onLoad={() => this.setState({ currentImageLoaded: true }) }
                   />
+                  {/* Display placeholder over current image until current image is loaded. */}
+                  <img
+                      className="currentImagePlaceholder"
+                      src={c.image.l.tracedSVG}
+                      alt=""
+                    />
 
                   {/* Preload next 2 images (hide with CSS).
                     * Why like this, and not with link rel prefetch?
@@ -135,13 +166,11 @@ class PostcardTemplate extends React.Component {
                     {`
 
                         img {
-                          -webkit-box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
-                          -moz-box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
-                          box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
-
                           position: absolute;
                           margin-left: auto;
                           margin-right: auto;
+                          margin-top: auto;
+                          margin-bottom: auto;
                           padding: 0;
 
                           left: 5%;
@@ -150,7 +179,6 @@ class PostcardTemplate extends React.Component {
                           bottom: 3%;
                           max-height: 94%;
                           max-width: 90%;
-                          border-radius: 8px;
 
                           @media only screen and (max-width: 1200px) {
                             left: 0px;
@@ -159,13 +187,27 @@ class PostcardTemplate extends React.Component {
                             bottom: 0px;
                             max-height: 100%;
                             max-width: 100%;
-                            border-radius: 0px;
                           }
 
                         }
 
                         .currentImage {
+                          -webkit-box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
+                          -moz-box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
+                          box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
+                          border-radius: 8px;
+
+                          opacity: ${this.state.currentImageLoaded ? 1 : 0};
+                          transition: ${this.state.userHasHadTimeToLookAtPlaceholder ? this.longTransitionDuration : this.snapTransitionDuration}ms ease-in-out;
+
                           z-index: ${this.state.zIndexes["currentImage"]}
+                        }
+
+                        .currentImagePlaceholder {
+                          height: 1337%;
+                          border-radius: 0px;
+
+                          z-index: ${this.state.zIndexes["currentImagePlaceholder"]}
                         }
 
                         .prefetchedImages {

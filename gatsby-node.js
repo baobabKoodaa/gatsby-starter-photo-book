@@ -20,8 +20,7 @@ exports.createPages = ({ graphql, actions}) => {
                     node {
                         absolutePath
                         childImageSharp {
-                            fixed(quality: 93, width: 450, height: 300, cropFocus: NORTH, traceSVG: { color: "#f9ebd2" }) {
-                                tracedSVG
+                            fixed(quality: 93, width: 450, height: 300, cropFocus: NORTH) {
                                 src
                             }
                             fluid(quality: 90, maxWidth: 2048, traceSVG: { color: "#f9ebd2" }) {
