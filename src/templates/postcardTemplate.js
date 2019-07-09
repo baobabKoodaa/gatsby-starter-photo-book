@@ -171,10 +171,10 @@ class PostcardTemplate extends React.Component {
                   
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
-                  <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} >
+                  <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} className="noSelect" >
                         <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
-                  <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} >
+                  <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} className="noSelect" >
                         <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
 
@@ -275,6 +275,15 @@ class PostcardTemplate extends React.Component {
                         a { outline: none; }
                         a:focus {
                           outline: 0;
+                        }
+                        .noSelect {
+                          -webkit-touch-callout: none;
+                          -webkit-user-select: none;
+                          -khtml-user-select: none;
+                          -moz-user-select: none;
+                          -ms-user-select: none;
+                          user-select: none;
+                          -webkit-tap-highlight-color: transparent;
                         }
 
                         img {
