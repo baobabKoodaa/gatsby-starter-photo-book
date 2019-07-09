@@ -46,8 +46,8 @@ class PostcardTemplate extends React.Component {
             {`
               html {
                 height: 100%;
-                overflow-y: hidden;
-                overflow-x: hidden;
+                overflow-y: hidden !important;
+                overflow-x: hidden !important;
               }
               body {
                 height: 100%;
@@ -65,10 +65,10 @@ class PostcardTemplate extends React.Component {
                   
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
-                  <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} onContextMenu={"return false;"} >
+                  <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} >
                         <span style={{ position: "fixed", height: "100%", width: "25%", left: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
-                  <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} onContextMenu={"return false;"} >
+                  <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} >
                         <span style={{ position: "fixed", height: "100%", width: "25%", right: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
 
