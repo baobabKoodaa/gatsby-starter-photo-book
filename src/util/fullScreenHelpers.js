@@ -3,7 +3,7 @@ import screenfull from "screenfull"
 function userHasSmallScreen() {
     if (typeof document === 'undefined') return false /* Build time render by Gatsby. */
     const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    return (width <= 1200)
+    return (width <= 800)
 }
 
 export function maybeEnterFullScreen() {
