@@ -159,6 +159,14 @@ class PostcardTemplate extends React.Component {
                         alt=""
                         importance="low"
                       />
+                      <img
+                        className="prefetchedImages"
+                        src={c.prefetch3.originalImg}
+                        srcSet={c.prefetch3.srcSet}
+                        sizes={c.prefetch3.sizes}
+                        alt=""
+                        importance="low"
+                      />
                     </>
                   )}
 
