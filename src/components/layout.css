@@ -24,3 +24,6 @@ a {
     text-decoration: none;
     outline: none;
 }
+a:focus {
+    outline: 0;
+}

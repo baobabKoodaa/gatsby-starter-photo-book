@@ -1,6 +1,6 @@
 import React from "react"
 import { Helmet } from "react-helmet"
-import { Link } from "gatsby"
+import { Link, navigate } from "gatsby"
 import theme from "../theme.yaml"
 import { FaTimesCircle, FaArrowLeft, FaArrowRight, FaExpand, FaCompress, FaDownload } from 'react-icons/fa';
 import { GlobalStateContext } from "../components/globalState.js"
@@ -16,6 +16,7 @@ class PostcardTemplate extends React.Component {
     this.exitHandler = this.exitHandler.bind(this)
     this.enterFullScreenAndRender = this.enterFullScreenAndRender.bind(this)
     this.exitFullScreenAndRender = this.exitFullScreenAndRender.bind(this)
+    this.currentImageLoaded = this.currentImageLoaded.bind(this)
 
     /* If the user has had time to look at placeholder (e.g. first image that they open, or slow connection),
      * then we want to transition from placeholder to real image. If the real image is already cached
@@ -27,6 +28,7 @@ class PostcardTemplate extends React.Component {
     const isFullScreen = (this.props.location && this.props.location.state && this.props.location.state.isFullScreen ? this.props.location.state.isFullScreen : false)
 
     this.state = {
+      hidePlaceholder: false,
       currentImageLoaded: false,
       zIndexes: this.zIndexes(),
       userHasHadTimeToLookAtPlaceholder: false,
@@ -70,21 +72,17 @@ class PostcardTemplate extends React.Component {
   handleKeyDown = (event) => {
     if (event.keyCode === 37) {
       /* Left arrow. */
-      console.log("left")
+      navigate(`/images/${this.props.pageContext.prevId}`, { state: { isFullScreen: this.state.isFullScreen } })
     } else if (event.keyCode === 39) {
       /* Right arrow. */
-      console.log("right")
-    } else if (event.keycode === 27 || event.key === "Escape") {
-      /* ESC, possibly exiting fullscreen mode. */
-      /* For some reason we can detect ESC when the user presses it outside full screen,
-       * but if the user presses ESC to exit full screen, an event does _not_ fire.
-       * TODO fix this so we get the correct toggle symbol. */
+      navigate(`/images/${this.props.pageContext.nextId}`, { state: { isFullScreen: this.state.isFullScreen }}
+      )
     }
   }
 
   componentDidMount() {
     /* Timer to determine placeholder transition. */
-    this.timerID = setTimeout(
+    this.timer1 = setTimeout(
       () => this.setState({
         userHasHadTimeToLookAtPlaceholder: true
       }),
@@ -105,9 +103,27 @@ class PostcardTemplate extends React.Component {
     }
   }
 
+  currentImageLoaded() {
+    /* Trigger re-render, start possible transition. */
+    this.setState({
+      currentImageLoaded: true
+    })
+
+    /* Timer to hide placeholder after transition
+     * (to protect against corner case where user flips phone or otherwise expands page width,
+     *  causing a small image from urlSet to be stretched to its limit, after
+     *  which point the placeholder will start leaking through) */
+    this.timer2 = setTimeout(
+      () => this.setState({
+        hidePlaceholder: true
+      }),
+      (this.longTransitionDuration + 200)
+    )
+  }
+
   componentWillUnmount() {
-    if (this.timerID) {
-      clearTimeout(this.timerID)
+    if (this.timer1) {
+      clearTimeout(this.timer1)
     }
     if (typeof document !== 'undefined') {
       document.removeEventListener("keydown", this.handleKeyDown)
@@ -155,17 +171,21 @@ class PostcardTemplate extends React.Component {
                   
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
-                  <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} >
+                  <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} >
                         <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
-                  <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} >
+                  <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} >
                         <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
 
                   {/* Visual cues that the user can navigate to prev/next.
                     * (Even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
-                  <FaArrowLeft style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Previous image" />
-                  <FaArrowRight style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next image" />
+                  <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} >
+                    <FaArrowLeft style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Previous image" />
+                  </Link>
+                  <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} >
+                    <FaArrowRight style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next image" />
+                  </Link>
 
                   {/* Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
@@ -204,14 +224,17 @@ class PostcardTemplate extends React.Component {
                     alt=""
                     title={c.image.title}
                     importance="high" /* Resource prioritization hint. */
-                    onLoad={() => this.setState({ currentImageLoaded: true }) }
+                    onLoad={this.currentImageLoaded}
                   />
-                  {/* Display placeholder over current image until current image is loaded. */}
-                  <img
+                  {/* Display placeholder under current image (which has opacity 0),
+                    * until current image has loaded (then transition and hide placeholder). */}
+                  {!this.state.hidePlaceholder && (
+                    <img
                       className="currentImagePlaceholder"
                       src={c.image.l.tracedSVG}
                       alt=""
                     />
+                  )}
 
                   {/* Preload adjacent images (hide with CSS).
                     * Why like this, and not with link rel prefetch?
@@ -250,6 +273,9 @@ class PostcardTemplate extends React.Component {
                     {`
 
                         a { outline: none; }
+                        a:focus {
+                          outline: 0;
+                        }
 
                         img {
                           position: absolute;
