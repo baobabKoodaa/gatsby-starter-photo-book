@@ -276,6 +276,9 @@ class PostcardTemplate extends React.Component {
                         a:focus {
                           outline: none !important;
                         }
+                        :focus {
+                          outline: none !important;
+                        }
                         .noSelect {
                           -webkit-touch-callout: none;
                           -webkit-user-select: none;
