@@ -272,11 +272,34 @@ class PostcardTemplate extends React.Component {
                   <style jsx>
                     {`
 
-                        a { outline: none !important; }
+                        a {
+                          -webkit-touch-callout: none;
+                          -webkit-user-select: none;
+                          -khtml-user-select: none;
+                          -moz-user-select: none;
+                          -ms-user-select: none;
+                          user-select: none;
+                          -webkit-tap-highlight-color: transparent;
+                          outline: none !important;
+                        }
                         a:focus {
+                          -webkit-touch-callout: none;
+                          -webkit-user-select: none;
+                          -khtml-user-select: none;
+                          -moz-user-select: none;
+                          -ms-user-select: none;
+                          user-select: none;
+                          -webkit-tap-highlight-color: transparent;
                           outline: none !important;
                         }
                         :focus {
+                          -webkit-touch-callout: none;
+                          -webkit-user-select: none;
+                          -khtml-user-select: none;
+                          -moz-user-select: none;
+                          -ms-user-select: none;
+                          user-select: none;
+                          -webkit-tap-highlight-color: transparent;
                           outline: none !important;
                         }
                         .noSelect {
@@ -287,6 +310,9 @@ class PostcardTemplate extends React.Component {
                           -ms-user-select: none;
                           user-select: none;
                           -webkit-tap-highlight-color: transparent;
+                          :focus {
+                            outline: none !important;
+                          }
                         }
 
                         img {
