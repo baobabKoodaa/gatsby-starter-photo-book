@@ -20,10 +20,16 @@ exports.createPages = ({ graphql, actions}) => {
                     node {
                         absolutePath
                         childImageSharp {
-                            fixed(quality: 95, width: 450, height: 300, cropFocus: NORTH) {
+                            fixed(quality: 93, width: 450, height: 300, cropFocus: NORTH, traceSVG: { color: "#f9ebd2" }) {
+                                tracedSVG
                                 src
                             }
-                            fluid(quality: 90) {
+                            fluid(quality: 90, maxWidth: 2048, traceSVG: { color: "#f9ebd2" }) {
+                                tracedSVG
+                                aspectRatio
+                                src
+                                srcSet
+                                sizes
                                 originalImg
                             }
                         }
@@ -58,13 +64,13 @@ exports.createPages = ({ graphql, actions}) => {
             const key = name+"_crophelper"
             const thumb = (
                 cropHelperEdges[key] ?
-                cropHelperEdges[key].node.childImageSharp.fixed.src :
-                edge.node.childImageSharp.fixed.src
+                cropHelperEdges[key].node.childImageSharp.fixed :
+                edge.node.childImageSharp.fixed
             )
 
             images[nextFreeId] = {
                 "id": nextFreeId,
-                "l": edge.node.childImageSharp.fluid.originalImg,
+                "l": edge.node.childImageSharp.fluid,
                 "s": thumb,
                 "title": title
             }
@@ -114,8 +120,8 @@ exports.createPages = ({ graphql, actions}) => {
                     image: images[currId],
                     nextId: nextId,
                     prevId: prevId,
-                    prefetchURL1: images[nextId].l,
-                    prefetchURL2: images[next2Id].l
+                    prefetch1: images[nextId].l,
+                    prefetch2: images[next2Id].l
                 }
             }
             createPage(pageData)

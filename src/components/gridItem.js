@@ -22,7 +22,7 @@ class GridItem extends React.Component {
                               */}
                             <span id={`id${props.item.id}`}></span>
                             <Link to={`/images/${props.item.id}`} onClick={maybeEnterFullScreen} >
-                                <img src={props.item.s} alt="" title="" />
+                                <img src={props.item.s.src} alt="" title="" />
                             </Link>
                         </>
                     )}

@@ -12,8 +12,20 @@ class PostcardTemplate extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentImageLoaded: false
+      currentImageLoaded: false,
+      zIndexes: this.zIndexes()
     }
+  }
+
+  zIndexes() {
+    /* Trying to reduce hidden dependencies. */
+    const z = {}
+    var next = 1
+    z["prefetchedImages"] = next++
+    z["currentImage"] = next++
+    z["invisibleLinks"] = next++
+    z["navButtons"] = next++
+    return z
   }
 
   render () {
@@ -24,10 +36,6 @@ class PostcardTemplate extends React.Component {
         <Helmet>
           <meta charSet="utf-8" />
           <title>{`Photo ${c.image.id}`}</title>
-
-          {/* Attempting to get the browser to prioritize current image as high as possible.
-            * Not sure if this does anything, but it can't really hurt. */}
-          <link rel="preload" href={c.image.l} as="image" importance="high" />
           
           <style>
             {/* 
@@ -58,36 +66,39 @@ class PostcardTemplate extends React.Component {
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
                   <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} onContextMenu={"return false;"} >
-                        <span style={{ position: "fixed", height: "100%", width: "25%", left: "0px", zIndex: 2 }}></span>
+                        <span style={{ position: "fixed", height: "100%", width: "25%", left: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
                   <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} onContextMenu={"return false;"} >
-                        <span style={{ position: "fixed", height: "100%", width: "25%", right: "0px", zIndex: 2 }}></span>
+                        <span style={{ position: "fixed", height: "100%", width: "25%", right: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
 
                   {/* Visual cues that the user can navigate to prev/next.
                     * (Even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
                   <span className="arrows">
                     <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} >
-                      <FaArrowCircleLeft style={{ left: "10px", zIndex: 5 }} />
+                      <FaArrowCircleLeft style={{ left: "10px" }} />
                     </Link>
                   </span>
                   <span className="arrows">
                     <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} >
-                      <FaArrowCircleRight style={{ right: "10px", zIndex: 5 }} />
+                      <FaArrowCircleRight style={{ right: "10px" }} />
                     </Link>
                   </span>
 
                   {/* Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
                     <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} >
-                      <FaTimesCircle className="x" style={{ right: "10px", top: "10px", zIndex: 5 }} />
+                      <FaTimesCircle className="x" style={{ right: "10px", top: "10px" }} />
                     </Link>
                   </span>
 
 
                   {/* Display current image. */}
                   <img
-                    src={c.image.l}
+                    className="currentImage"
+                    src={c.image.l.originalImg}
+                    srcSet={c.image.l.srcSet}
+                    sizes={c.image.l.sizes}
                     alt=""
                     title={c.image.title}
                     importance="high" /* Resource prioritization hint. */
@@ -96,20 +107,24 @@ class PostcardTemplate extends React.Component {
 
                   {/* Preload next 2 images (hide with CSS).
                     * Why like this, and not with link rel prefetch?
-                    * Because link rel prefetch eats sometimes eats bandwidth from current image.
+                    * Because link rel prefetch sometimes eats bandwidth from current image.
                     * This way we guarantee all bandwidth to the current image and only begin
                     * fetching next images once the current image has fully loaded. */}
                   {this.state.currentImageLoaded && (
                     <>
                       <img
                         className="prefetchedImages"
-                        src={c.prefetchURL1}
+                        src={c.prefetch1.originalImg}
+                        srcSet={c.prefetch1.srcSet}
+                        sizes={c.prefetch1.sizes}
                         alt=""
                         importance="low"
                       />
                       <img
                         className="prefetchedImages"
-                        src={c.prefetchURL2}
+                        src={c.prefetch2.originalImg}
+                        srcSet={c.prefetch2.srcSet}
+                        sizes={c.prefetch2.sizes}
                         alt=""
                         importance="low"
                       />
@@ -127,7 +142,6 @@ class PostcardTemplate extends React.Component {
                           position: absolute;
                           margin-left: auto;
                           margin-right: auto;
-                          z-index: 1;
                           padding: 0;
 
                           left: 5%;
@@ -150,8 +164,13 @@ class PostcardTemplate extends React.Component {
 
                         }
 
+                        .currentImage {
+                          z-index: ${this.state.zIndexes["currentImage"]}
+                        }
+
                         .prefetchedImages {
                           opacity: 0;
+                          z-index: ${this.state.zIndexes["prefetchedImages"]}
                         }
 
                         .arrows {
@@ -171,7 +190,7 @@ class PostcardTemplate extends React.Component {
                           font-size: 40px;
                           fill: ${theme.color.brand.primary};
                           opacity: 0.4;
-                          z-index: 5;
+                          z-index: ${this.state.zIndexes["navButtons"]}
                         }
 
                         :global(svg):hover {
