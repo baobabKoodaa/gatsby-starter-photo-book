@@ -9,6 +9,13 @@ import { maybeEnterFullScreen } from "../util/fullScreenHelpers.js"
 
 class PostcardTemplate extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentImageLoaded: false
+    }
+  }
+
   render () {
     const c = this.props.pageContext
 
@@ -18,12 +25,9 @@ class PostcardTemplate extends React.Component {
           <meta charSet="utf-8" />
           <title>{`Photo ${c.image.id}`}</title>
 
-          {/* Attempting to get the browser to prioritize current image above next 2 images. */}
+          {/* Attempting to get the browser to prioritize current image as high as possible.
+            * Not sure if this does anything, but it can't really hurt. */}
           <link rel="preload" href={c.image.l} as="image" importance="high" />
-
-          {/* Prefetch the next 2 images (unfortunately appears to steal some bandwidth from current image, still.) */}
-          <link rel="prefetch" href={c.prefetchURL1} as="image" importance="low" />
-          <link rel="prefetch" href={c.prefetchURL2} as="image" importance="low" />
           
           <style>
             {/* 
@@ -86,10 +90,31 @@ class PostcardTemplate extends React.Component {
                     src={c.image.l}
                     alt=""
                     title={c.image.title}
-                    importance="high"
+                    importance="high" /* Resource prioritization hint. */
+                    onLoad={() => this.setState({ currentImageLoaded: true }) }
                   />
 
-
+                  {/* Preload next 2 images (hide with CSS).
+                    * Why like this, and not with link rel prefetch?
+                    * Because link rel prefetch eats sometimes eats bandwidth from current image.
+                    * This way we guarantee all bandwidth to the current image and only begin
+                    * fetching next images once the current image has fully loaded. */}
+                  {this.state.currentImageLoaded && (
+                    <>
+                      <img
+                        className="prefetchedImages"
+                        src={c.prefetchURL1}
+                        alt=""
+                        importance="low"
+                      />
+                      <img
+                        className="prefetchedImages"
+                        src={c.prefetchURL2}
+                        alt=""
+                        importance="low"
+                      />
+                    </>
+                  )}
 
                   <style jsx>
                     {`
@@ -123,6 +148,10 @@ class PostcardTemplate extends React.Component {
                             border-radius: 0px;
                           }
 
+                        }
+
+                        .prefetchedImages {
+                          opacity: 0;
                         }
 
                         .arrows {
