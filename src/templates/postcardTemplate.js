@@ -272,9 +272,9 @@ class PostcardTemplate extends React.Component {
                   <style jsx>
                     {`
 
-                        a { outline: none; }
+                        a { outline: none !important; }
                         a:focus {
-                          outline: 0;
+                          outline: none !important;
                         }
                         .noSelect {
                           -webkit-touch-callout: none;
