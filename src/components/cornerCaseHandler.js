@@ -14,7 +14,8 @@ export class CornerCaseHandler extends React.Component {
         this.state = {
             alreadyFetched: false,
             g: props.g,
-            currId: props.currId
+            currId: props.currId,
+            nextId: props.nextId
         }
     }
 

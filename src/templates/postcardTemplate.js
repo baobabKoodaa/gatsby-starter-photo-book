@@ -12,6 +12,8 @@ class PostcardTemplate extends React.Component {
   constructor(props) {
     super(props)
 
+    this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.exitHandler = this.exitHandler.bind(this)
     this.enterFullScreenAndRender = this.enterFullScreenAndRender.bind(this)
     this.exitFullScreenAndRender = this.exitFullScreenAndRender.bind(this)
 
@@ -22,11 +24,13 @@ class PostcardTemplate extends React.Component {
     this.snapTransitionDuration = 0
     this.thresholdTimeToLookAtPlaceholder = 130
 
+    const isFullScreen = (this.props.location && this.props.location.state && this.props.location.state.isFullScreen ? this.props.location.state.isFullScreen : false)
+
     this.state = {
       currentImageLoaded: false,
       zIndexes: this.zIndexes(),
       userHasHadTimeToLookAtPlaceholder: false,
-      fullScreenToggleSymbol: false
+      isFullScreen: isFullScreen
     }
   }
 
@@ -45,30 +49,72 @@ class PostcardTemplate extends React.Component {
   enterFullScreenAndRender() {
     enterFullScreen()
     this.setState({
-      /* Don't refactor, this seems to be the only reliable way to render the correct symbol. */
-      fullScreenToggleSymbol: true
+      isFullScreen: true
     })
   }
 
   exitFullScreenAndRender() {
     exitFullScreen()
     this.setState({
-      fullScreenToggleSymbol: false
+      isFullScreen: false
     })
   }
 
+  exitHandler() {
+    if (!document) return
+    if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
+      this.exitFullScreenAndRender() /* To change toggle symbol. */
+    }
+  }
+
+  handleKeyDown = (event) => {
+    if (event.keyCode === 37) {
+      /* Left arrow. */
+      console.log("left")
+    } else if (event.keyCode === 39) {
+      /* Right arrow. */
+      console.log("right")
+    } else if (event.keycode === 27 || event.key === "Escape") {
+      /* ESC, possibly exiting fullscreen mode. */
+      /* For some reason we can detect ESC when the user presses it outside full screen,
+       * but if the user presses ESC to exit full screen, an event does _not_ fire.
+       * TODO fix this so we get the correct toggle symbol. */
+    }
+  }
+
   componentDidMount() {
+    /* Timer to determine placeholder transition. */
     this.timerID = setTimeout(
       () => this.setState({
         userHasHadTimeToLookAtPlaceholder: true
       }),
       this.thresholdTimeToLookAtPlaceholder
     );
+
+    /* Keyboard listener for arrow key navigation. */
+    if (typeof document !== 'undefined' && document.addEventListener) {
+      document.addEventListener("keydown", this.handleKeyDown)
+    }
+
+    /* Fullscreen change listener to detect when user presses ESC to exit fullscreen. */
+    if (typeof document !== 'undefined' && document.addEventListener) {
+      document.addEventListener('webkitfullscreenchange', this.exitHandler, false);
+      document.addEventListener('mozfullscreenchange', this.exitHandler, false);
+      document.addEventListener('fullscreenchange', this.exitHandler, false);
+      document.addEventListener('MSFullscreenChange', this.exitHandler, false);
+    }
   }
 
   componentWillUnmount() {
     if (this.timerID) {
       clearTimeout(this.timerID)
+    }
+    if (typeof document !== 'undefined') {
+      document.removeEventListener("keydown", this.handleKeyDown)
+      document.removeEventListener('webkitfullscreenchange', this.exitHandler, false);
+      document.removeEventListener('mozfullscreenchange', this.exitHandler, false);
+      document.removeEventListener('fullscreenchange', this.exitHandler, false);
+      document.removeEventListener('MSFullscreenChange', this.exitHandler, false);
     }
   }
 
@@ -105,29 +151,21 @@ class PostcardTemplate extends React.Component {
         <GlobalStateContext.Consumer>
           {globalState => (
               <>
-                  <CornerCaseHandler g={globalState} currId={c.image.id} nextId={c.image.nextId} />
+                  <CornerCaseHandler g={globalState} currId={c.image.id} nextId={c.nextId} />
                   
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
-                  <Link to={`/images/${c.prevId}`} >
+                  <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} >
                         <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
-                  <Link to={`/images/${c.nextId}`} >
+                  <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} >
                         <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
 
                   {/* Visual cues that the user can navigate to prev/next.
                     * (Even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
-                  <span className="arrows">
-                    <Link to={`/images/${c.prevId}`} title="Previous image" >
-                      <FaArrowLeft style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} />
-                    </Link>
-                  </span>
-                  <span className="arrows">
-                    <Link to={`/images/${c.nextId}`} title="Next image" >
-                      <FaArrowRight style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} />
-                    </Link>
-                  </span>
+                  <FaArrowLeft style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Previous image" />
+                  <FaArrowRight style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next image" />
 
                   {/* Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
@@ -137,12 +175,12 @@ class PostcardTemplate extends React.Component {
                   </span>
 
                   {/* Fullscreen toggle. */}
-                  {this.state.fullScreenToggleSymbol && (
+                  {this.state.isFullScreen && (
                     <span className="fullscreen">
                       <FaCompress style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Exit full screen mode" onClick={this.exitFullScreenAndRender} />
                     </span>
                   )}
-                  {!this.state.fullScreenToggleSymbol && (
+                  {!this.state.isFullScreen && (
                     <span className="fullscreen">
                       <FaExpand style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Enter full screen mode" onClick={this.enterFullScreenAndRender} />
                     </span>
@@ -210,6 +248,8 @@ class PostcardTemplate extends React.Component {
 
                   <style jsx>
                     {`
+
+                        a { outline: none; }
 
                         img {
                           position: absolute;

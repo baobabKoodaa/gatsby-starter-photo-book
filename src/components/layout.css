@@ -22,4 +22,5 @@ body {
 a {
     color: gray;
     text-decoration: none;
+    outline: none;
 }
