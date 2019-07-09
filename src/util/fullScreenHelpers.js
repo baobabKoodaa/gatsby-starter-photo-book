@@ -1,19 +1,13 @@
 import screenfull from "screenfull"
 
-function userHasSmallScreen() {
-    if (typeof document === 'undefined') return false /* Build time render by Gatsby. */
-    const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    return (width <= 800)
-}
-
-export function maybeEnterFullScreen() {
+export function enterFullScreen() {
+    if (typeof document === 'undefined') return /* Build time render by Gatsby. */
     if (!screenfull.enabled) return /* Browser prevents full screen or problem with library. */
-    if (userHasSmallScreen()) {
-        screenfull.request()
-    }
+    screenfull.request()
 }
 
 export function exitFullScreen() {
+    if (typeof document === 'undefined') return /* Build time render by Gatsby. */
     if (!screenfull.enabled) return /* Browser prevents full screen or problem with library. */
     if (screenfull.isFullscreen) {
         screenfull.exit()

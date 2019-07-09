@@ -1,6 +1,5 @@
 import React from "react"
 import { Link } from "gatsby"
-import { maybeEnterFullScreen } from "../util/fullScreenHelpers.js"
 //import theme from "../theme.yaml"
 
 class GridItem extends React.Component {
@@ -21,7 +20,7 @@ class GridItem extends React.Component {
                               * Do not refactor the id into Link or Chrome will sometimes scroll into _middle_ of img instead of top.
                               */}
                             <span id={`id${props.item.id}`}></span>
-                            <Link to={`/images/${props.item.id}`} onClick={maybeEnterFullScreen} >
+                            <Link to={`/images/${props.item.id}`} >
                                 <img src={props.item.s.src} alt="" title="" />
                             </Link>
                         </>

@@ -2,27 +2,31 @@ import React from "react"
 import { Helmet } from "react-helmet"
 import { Link } from "gatsby"
 import theme from "../theme.yaml"
-import { FaTimesCircle, FaArrowCircleLeft, FaArrowCircleRight } from 'react-icons/fa';
+import { FaTimesCircle, FaArrowLeft, FaArrowRight, FaExpand, FaCompress, FaDownload } from 'react-icons/fa';
 import { GlobalStateContext } from "../components/globalState.js"
 import { CornerCaseHandler } from "../components/cornerCaseHandler.js"
-import { maybeEnterFullScreen } from "../util/fullScreenHelpers.js"
+import { enterFullScreen, exitFullScreen } from "../util/fullScreenHelpers.js"
 
 class PostcardTemplate extends React.Component {
 
   constructor(props) {
     super(props)
 
+    this.enterFullScreenAndRender = this.enterFullScreenAndRender.bind(this)
+    this.exitFullScreenAndRender = this.exitFullScreenAndRender.bind(this)
+
     /* If the user has had time to look at placeholder (e.g. first image that they open, or slow connection),
      * then we want to transition from placeholder to real image. If the real image is already cached
      * (e.g. subsequent images on fast internet connection), then we want to snap to real image. */
     this.longTransitionDuration = 1000
     this.snapTransitionDuration = 0
-    this.thresholdTimeToLookAtPlaceholder = 200
+    this.thresholdTimeToLookAtPlaceholder = 130
 
     this.state = {
       currentImageLoaded: false,
       zIndexes: this.zIndexes(),
-      userHasHadTimeToLookAtPlaceholder: false
+      userHasHadTimeToLookAtPlaceholder: false,
+      fullScreenToggleSymbol: false
     }
   }
 
@@ -36,6 +40,21 @@ class PostcardTemplate extends React.Component {
     z["invisibleLinks"] = next++
     z["navButtons"] = next++
     return z
+  }
+
+  enterFullScreenAndRender() {
+    enterFullScreen()
+    this.setState({
+      /* Don't refactor, this seems to be the only reliable way to render the correct symbol. */
+      fullScreenToggleSymbol: true
+    })
+  }
+
+  exitFullScreenAndRender() {
+    exitFullScreen()
+    this.setState({
+      fullScreenToggleSymbol: false
+    })
   }
 
   componentDidMount() {
@@ -90,31 +109,51 @@ class PostcardTemplate extends React.Component {
                   
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
-                  <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} >
-                        <span style={{ position: "fixed", height: "100%", width: "25%", left: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
+                  <Link to={`/images/${c.prevId}`} >
+                        <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
-                  <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} >
-                        <span style={{ position: "fixed", height: "100%", width: "25%", right: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
+                  <Link to={`/images/${c.nextId}`} >
+                        <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
                   </Link>
 
                   {/* Visual cues that the user can navigate to prev/next.
                     * (Even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
                   <span className="arrows">
-                    <Link to={`/images/${c.prevId}`} onClick={maybeEnterFullScreen} >
-                      <FaArrowCircleLeft style={{ left: "10px" }} />
+                    <Link to={`/images/${c.prevId}`} title="Previous image" >
+                      <FaArrowLeft style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} />
                     </Link>
                   </span>
                   <span className="arrows">
-                    <Link to={`/images/${c.nextId}`} onClick={maybeEnterFullScreen} >
-                      <FaArrowCircleRight style={{ right: "10px" }} />
+                    <Link to={`/images/${c.nextId}`} title="Next image" >
+                      <FaArrowRight style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} />
                     </Link>
                   </span>
 
                   {/* Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
-                    <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} >
-                      <FaTimesCircle className="x" style={{ right: "10px", top: "10px" }} />
+                    <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} title="Back to Gallery" >
+                      <FaTimesCircle style={{ right: "10px", top: "10px" }} />
                     </Link>
+                  </span>
+
+                  {/* Fullscreen toggle. */}
+                  {this.state.fullScreenToggleSymbol && (
+                    <span className="fullscreen">
+                      <FaCompress style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Exit full screen mode" onClick={this.exitFullScreenAndRender} />
+                    </span>
+                  )}
+                  {!this.state.fullScreenToggleSymbol && (
+                    <span className="fullscreen">
+                      <FaExpand style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Enter full screen mode" onClick={this.enterFullScreenAndRender} />
+                    </span>
+                  )}
+                  
+
+                  {/* Download image button. */}
+                  <span className="download">
+                    <a href={c.image.l.originalImg} download >
+                      <FaDownload style={{ right: "80px", bottom: "12px" }} title="Download image" />
+                    </a>
                   </span>
 
 
@@ -136,11 +175,10 @@ class PostcardTemplate extends React.Component {
                       alt=""
                     />
 
-                  {/* Preload next 2 images (hide with CSS).
+                  {/* Preload adjacent images (hide with CSS).
                     * Why like this, and not with link rel prefetch?
-                    * Because link rel prefetch sometimes eats bandwidth from current image.
-                    * This way we guarantee all bandwidth to the current image and only begin
-                    * fetching next images once the current image has fully loaded. */}
+                    * 1. link rel prefetch sometimes eats bandwidth from current image.
+                    * 2. link rel prefetch can not be used with srcSet. */}
                   {this.state.currentImageLoaded && (
                     <>
                       <img
@@ -221,18 +259,6 @@ class PostcardTemplate extends React.Component {
                         .prefetchedImages {
                           opacity: 0;
                           z-index: ${this.state.zIndexes["prefetchedImages"]}
-                        }
-
-                        .arrows {
-
-                          :global(svg) {
-
-                            bottom: 50vh;
-
-                            @media only screen and (max-width: 1200px) {
-                              bottom: 10px !important;
-                            }
-                          }
                         }
 
                         :global(svg) {
