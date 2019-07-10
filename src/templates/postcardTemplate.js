@@ -13,7 +13,7 @@ class PostcardTemplate extends React.Component {
     super(props)
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
-    this.exitHandler = this.exitHandler.bind(this)
+    this.fullScreenChangeHandler = this.fullScreenChangeHandler.bind(this)
     this.enterFullScreenAndRender = this.enterFullScreenAndRender.bind(this)
     this.exitFullScreenAndRender = this.exitFullScreenAndRender.bind(this)
     this.currentImageLoaded = this.currentImageLoaded.bind(this)
@@ -37,7 +37,7 @@ class PostcardTemplate extends React.Component {
   }
 
   zIndexes() {
-    /* Trying to reduce hidden dependencies. */
+    /* Doing it like this to reduce hidden dependencies. */
     const z = {}
     var next = 1
     z["prefetchedImages"] = next++
@@ -51,6 +51,7 @@ class PostcardTemplate extends React.Component {
   enterFullScreenAndRender() {
     enterFullScreen()
     this.setState({
+      /* Re-render with the correct toggle icon. */
       isFullScreen: true
     })
   }
@@ -58,14 +59,18 @@ class PostcardTemplate extends React.Component {
   exitFullScreenAndRender() {
     exitFullScreen()
     this.setState({
+      /* Re-render with the correct toggle icon. */
       isFullScreen: false
     })
   }
 
-  exitHandler() {
+  fullScreenChangeHandler() {
+    /* This exists to detect changes in full screen initiated with browser functions (as opposed to our fullscreen icon). */
     if (!document) return
     if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
-      this.exitFullScreenAndRender() /* To change toggle symbol. */
+      this.exitFullScreenAndRender()
+    } else {
+      this.enterFullScreenAndRender()
     }
   }
 
@@ -96,10 +101,10 @@ class PostcardTemplate extends React.Component {
 
     /* Fullscreen change listener to detect when user presses ESC to exit fullscreen. */
     if (typeof document !== 'undefined' && document.addEventListener) {
-      document.addEventListener('webkitfullscreenchange', this.exitHandler, false);
-      document.addEventListener('mozfullscreenchange', this.exitHandler, false);
-      document.addEventListener('fullscreenchange', this.exitHandler, false);
-      document.addEventListener('MSFullscreenChange', this.exitHandler, false);
+      document.addEventListener('webkitfullscreenchange', this.fullScreenChangeHandler, false);
+      document.addEventListener('mozfullscreenchange', this.fullScreenChangeHandler, false);
+      document.addEventListener('fullscreenchange', this.fullScreenChangeHandler, false);
+      document.addEventListener('MSFullscreenChange', this.fullScreenChangeHandler, false);
     }
   }
 
@@ -127,10 +132,10 @@ class PostcardTemplate extends React.Component {
     }
     if (typeof document !== 'undefined') {
       document.removeEventListener("keydown", this.handleKeyDown)
-      document.removeEventListener('webkitfullscreenchange', this.exitHandler, false);
-      document.removeEventListener('mozfullscreenchange', this.exitHandler, false);
-      document.removeEventListener('fullscreenchange', this.exitHandler, false);
-      document.removeEventListener('MSFullscreenChange', this.exitHandler, false);
+      document.removeEventListener('webkitfullscreenchange', this.fullScreenChangeHandler, false);
+      document.removeEventListener('mozfullscreenchange', this.fullScreenChangeHandler, false);
+      document.removeEventListener('fullscreenchange', this.fullScreenChangeHandler, false);
+      document.removeEventListener('MSFullscreenChange', this.fullScreenChangeHandler, false);
     }
   }
 
@@ -199,17 +204,14 @@ class PostcardTemplate extends React.Component {
                   </span>
 
                   {/* Fullscreen toggle. */}
-                  {this.state.isFullScreen && (
-                    <span className="fullscreen">
+                  <span className="fullscreen">
+                    {this.state.isFullScreen && (
                       <FaCompress style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Exit full screen mode" onClick={this.exitFullScreenAndRender} />
-                    </span>
-                  )}
-                  {!this.state.isFullScreen && (
-                    <span className="fullscreen">
+                    )}
+                    {!this.state.isFullScreen && (
                       <FaExpand style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Enter full screen mode" onClick={this.enterFullScreenAndRender} />
-                    </span>
-                  )}
-                  
+                    )}
+                  </span>
 
                   {/* Download image button. */}
                   <span className="download">
@@ -217,7 +219,6 @@ class PostcardTemplate extends React.Component {
                       <FaDownload style={{ right: "80px", bottom: "12px" }} title="Download image" />
                     </a>
                   </span>
-
 
                   {/* Display current image. */}
                   <img
