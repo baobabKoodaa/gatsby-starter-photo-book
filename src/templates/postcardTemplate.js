@@ -18,23 +18,41 @@ class PostcardTemplate extends React.Component {
     this.enterFullScreenAndRender = this.enterFullScreenAndRender.bind(this)
     this.exitFullScreenAndRender = this.exitFullScreenAndRender.bind(this)
     this.currentImageLoaded = this.currentImageLoaded.bind(this)
+    this.nextImageLoaded = this.nextImageLoaded.bind(this)
+    this.prevImageLoaded = this.prevImageLoaded.bind(this)
+    this.getStatePassForNext = this.getStatePassForNext.bind(this)
+    this.getStatePassForPrev = this.getStatePassForPrev.bind(this)
 
-    /* If the user has had time to look at placeholder (e.g. first image that they open, or slow connection),
-     * then we want to transition from placeholder to real image. If the real image is already cached
-     * (e.g. subsequent images on fast internet connection), then we want to snap to real image. */
-    this.longTransitionDuration = 1000
-    this.snapTransitionDuration = 0
+    /* Magic numbers. */
+    this.placeholderTransitionDuration = 1000
     this.thresholdTimeToLookAtPlaceholder = 0
     this.zIndexes = this.zIndexes()
-
-    const isFullScreen = (this.props.location && this.props.location.state && this.props.location.state.isFullScreen ? this.props.location.state.isFullScreen : false)
+    
+    /* Two different modes for transitioning between already-downloaded-images:
+     * 1. Just snap to next image
+     * 2. Fade-in transition (same as placeholder transition) (needs more work to look good for this purpose) */
+    const mode = 1
 
     this.state = {
-      hidePlaceholder: false,
-      currentImageLoaded: false,
-      userHasHadTimeToLookAtPlaceholder: false,
-      isFullScreen: isFullScreen
+      currentImageLoaded: (mode === 2 ? false : this.getFromPassedStateOrDefault("currentImageLoaded", false)),
+      replacePlaceholderWith: this.getFromPassedStateOrDefault("replacePlaceholderWith", false),
+      isFullScreen: this.getFromPassedStateOrDefault("isFullScreen"),
+      nextImageLoaded: this.getFromPassedStateOrDefault("nextImageLoaded", false),
+      prevImageLoaded: this.getFromPassedStateOrDefault("prevImageLoaded", false)
     }
+
+    if (mode === 2) {
+      if (this.getFromPassedStateOrDefault("currentImageLoaded")) {
+        this.setState({
+          currentImageLoaded: true
+        })
+      }
+    }
+  }
+
+  getFromPassedStateOrDefault(key, defaultVal = false) {
+    if (!this.props.location || !this.props.location.state || !this.props.location.state[key]) return defaultVal
+    return this.props.location.state[key]
   }
 
   zIndexes() {
@@ -79,23 +97,14 @@ class PostcardTemplate extends React.Component {
   handleKeyDown = (event) => {
     if (event.keyCode === 37) {
       /* Left arrow. */
-      navigate(`/images/${this.props.pageContext.prevId}`, { state: { isFullScreen: this.state.isFullScreen } })
+      navigate(`/images/${this.props.pageContext.prevId}`, { state: this.getStatePassForPrev() })
     } else if (event.keyCode === 39) {
       /* Right arrow. */
-      navigate(`/images/${this.props.pageContext.nextId}`, { state: { isFullScreen: this.state.isFullScreen }}
-      )
+      navigate(`/images/${this.props.pageContext.nextId}`, { state: this.getStatePassForPrev() })
     }
   }
 
   componentDidMount() {
-    /* Timer to determine placeholder transition. */
-    this.timer1 = setTimeout(
-      () => this.setState({
-        userHasHadTimeToLookAtPlaceholder: true
-      }),
-      this.thresholdTimeToLookAtPlaceholder
-    );
-
     /* Keyboard listener for arrow key navigation. */
     if (typeof document !== 'undefined' && document.addEventListener) {
       document.addEventListener("keydown", this.handleKeyDown)
@@ -115,15 +124,18 @@ class PostcardTemplate extends React.Component {
     this.setState({
       currentImageLoaded: true
     })
+  }
 
-    /* Timer to hide placeholder after transition
-     * (to protect against corner case where user flips phone or otherwise expands page width,
-     *  causing a small image from urlSet to be stretched to its limit, after
-     *  which point the placeholder will start leaking through) */
-    this.timer2 = setTimeout(
-      () => this.setState({ hidePlaceholder: true }),
-      (this.longTransitionDuration + 200)
-    )
+  nextImageLoaded() {
+    this.setState({
+      nextImageLoaded: true
+    })
+  }
+
+  prevImageLoaded() {
+    this.setState({
+      prevImageLoaded: true
+    })
   }
 
   componentWillUnmount() {
@@ -139,6 +151,25 @@ class PostcardTemplate extends React.Component {
       document.removeEventListener('mozfullscreenchange', this.fullScreenChangeHandler, false);
       document.removeEventListener('fullscreenchange', this.fullScreenChangeHandler, false);
       document.removeEventListener('MSFullscreenChange', this.fullScreenChangeHandler, false);
+    }
+  }
+
+  getStatePassForNext() {
+    //console.log(this.props.pageContext.image.fluid)
+    return {
+      isFullScreen: this.state.isFullScreen,
+      currentImageLoaded: this.state.nextImageLoaded,
+      replacePlaceholderWith: (this.state.nextImageLoaded ? this.props.pageContext.image.fluid : false),
+      prevImageLoaded: this.state.currentImageLoaded
+    }
+  }
+
+  getStatePassForPrev() {
+    return {
+      isFullScreen: this.state.isFullScreen,
+      currentImageLoaded: this.state.prevImageLoaded,
+      replacePlaceholderWith: (this.state.prevImageLoaded ? this.props.pageContext.image.fluid : false),
+      nextImageLoaded: this.state.currentImageLoaded
     }
   }
 
@@ -182,23 +213,23 @@ class PostcardTemplate extends React.Component {
                   <CornerCaseHandler g={globalState} currId={c.image.id} nextId={c.nextId} />
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
-                  <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} className="noSelect" >
+                  <Link to={`/images/${c.prevId}`} state={this.getStatePassForPrev()} title={c.image.title} >
                         <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: this.zIndexes["invisibleLinks"] }}></span>
                   </Link>
-                  <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} className="noSelect" >
+                  <Link to={`/images/${c.nextId}`} state={this.getStatePassForNext()} title={c.image.title} >
                         <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: this.zIndexes["invisibleLinks"] }}></span>
                   </Link>
 
                   {/* Navbuttons: prev/next (even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
-                  <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} >
+                  <Link to={`/images/${c.prevId}`} state={this.getStatePassForPrev()} >
                     <FaArrowLeft className="arrowButtons" style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Previous image" />
                   </Link>
-                  <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} >
+                  <Link to={`/images/${c.nextId}`} state={this.getStatePassForNext()} >
                     <FaArrowRight className="arrowButtons" style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next image" />
                   </Link>
 
                   {/* Flash cues for small screens instead of sticking prev/next buttons. */}
-                  <FlashCue g={globalState} additionalWait={this.longTransitionDuration} zIndex={this.zIndexes["flashCue"]} />
+                  <FlashCue g={globalState} additionalWait={this.placeholderTransitionDuration} zIndex={this.zIndexes["flashCue"]} />
 
                   {/* Navbutton: Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
@@ -226,22 +257,36 @@ class PostcardTemplate extends React.Component {
 
                   {/* Display current image. */}
                   <img
-                    className="currentImage"
+                    className={`decoratedImage ${this.state.currentImageLoaded ? "fade-in" : "hide"}`}
                     src={c.image.fluid.originalImg}
                     srcSet={c.image.fluid.srcSet}
                     sizes={c.image.fluid.sizes}
                     alt=""
                     title={c.image.title}
                     importance="high" /* Resource prioritization hint. */
+                    style={{ zIndex: this.zIndexes["currentImage"] }}
                     onLoad={this.currentImageLoaded}
                   />
-                  {/* Display placeholder under current image (which has opacity 0),
-                    * until current image has loaded (then transition and hide placeholder). */}
-                  {!this.state.hidePlaceholder && (
+
+                  {/* If current image is not ready, display placeholder until current image has loaded, then transition. */}
+                  {!this.state.replacePlaceholderWith && (
                     <img
-                      className="currentImagePlaceholder"
+                      className={`currentImagePlaceholder ${this.state.currentImageLoaded ? "fade-out" : ""}`}
                       src={c.image.fluid.tracedSVG}
                       alt=""
+                      style={{ zIndex: this.zIndexes["currentImagePlaceholder"], height: "1337%", borderRadius: "0px" }}
+                    />
+                  )}
+                  
+                  {/* If current image is ready at page load, replace placeholder with previous image. */}
+                  {this.state.replacePlaceholderWith && (
+                    <img
+                      className={`decoratedImage ${this.state.currentImageLoaded ? "fade-out" : ""}`}
+                      src={this.state.replacePlaceholderWith.originalImg}
+                      srcSet={this.state.replacePlaceholderWith.srcSet}
+                      sizes={this.state.replacePlaceholderWith.sizes}
+                      alt=""
+                      style={{ zIndex: this.zIndexes["currentImagePlaceholder"] }}
                     />
                   )}
 
@@ -257,7 +302,8 @@ class PostcardTemplate extends React.Component {
                         srcSet={c.prefetch1.srcSet}
                         sizes={c.prefetch1.sizes}
                         alt=""
-                        importance="low"
+                        importance="high" /* TODO experiment */
+                        onLoad={this.nextImageLoaded}
                       />
                       <img
                         className="prefetchedImages"
@@ -266,6 +312,7 @@ class PostcardTemplate extends React.Component {
                         sizes={c.prefetch2.sizes}
                         alt=""
                         importance="low"
+                        onLoad={this.prevImageLoaded}
                       />
                       <img
                         className="prefetchedImages"
@@ -311,23 +358,25 @@ class PostcardTemplate extends React.Component {
 
                         }
 
-                        .currentImage {
+                        .decoratedImage {
                           -webkit-box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
                           -moz-box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
                           box-shadow: 1vw 1vh 5vh 0px rgba(0,0,0,0.75);
                           border-radius: 8px;
-
-                          opacity: ${this.state.currentImageLoaded ? 1 : 0};
-                          transition: ${this.state.userHasHadTimeToLookAtPlaceholder ? this.longTransitionDuration : this.snapTransitionDuration}ms ease-in-out;
-
-                          z-index: ${this.zIndexes["currentImage"]}
                         }
 
-                        .currentImagePlaceholder {
-                          height: 1337%;
-                          border-radius: 0px;
+                        .hide {
+                          opacity: 0;
+                        }
 
-                          z-index: ${this.zIndexes["currentImagePlaceholder"]}
+                        .fade-in {
+                          opacity: 1;
+                          transition: ${this.placeholderTransitionDuration}ms ease-in;
+                        }
+
+                        .fade-out {
+                          opacity: 0;
+                          transition: ${this.placeholderTransitionDuration}ms step-end;
                         }
 
                         .prefetchedImages {
