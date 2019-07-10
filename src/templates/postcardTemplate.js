@@ -130,6 +130,9 @@ class PostcardTemplate extends React.Component {
     if (this.timer1) {
       clearTimeout(this.timer1)
     }
+    if (this.timer2) {
+      clearTimeout(this.timer2)
+    }
     if (typeof document !== 'undefined') {
       document.removeEventListener("keydown", this.handleKeyDown)
       document.removeEventListener('webkitfullscreenchange', this.fullScreenChangeHandler, false);
@@ -342,6 +345,10 @@ class PostcardTemplate extends React.Component {
                             bottom: 0px;
                             max-height: 100%;
                             max-width: 100%;
+
+                            -webkit-box-shadow: 0 0 0 0 !important;
+                            -moz-box-shadow: 0 0 0 0 !important;
+                            box-shadow: 0 0 0 0 !important;
                           }
 
                         }
@@ -374,7 +381,7 @@ class PostcardTemplate extends React.Component {
                           position: fixed;
                           font-size: 40px;
                           fill: ${theme.color.brand.primary};
-                          opacity: 0.4;
+                          opacity: 0.5;
                           z-index: ${this.state.zIndexes["navButtons"]}
                         }
 
