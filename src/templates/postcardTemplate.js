@@ -6,6 +6,7 @@ import { FaTimesCircle, FaArrowLeft, FaArrowRight, FaExpand, FaCompress, FaDownl
 import { GlobalStateContext } from "../components/globalState.js"
 import { CornerCaseHandler } from "../components/cornerCaseHandler.js"
 import { enterFullScreen, exitFullScreen } from "../util/fullScreenHelpers.js"
+import { FlashCue } from "../components/flashCue.js"
 
 class PostcardTemplate extends React.Component {
 
@@ -23,14 +24,14 @@ class PostcardTemplate extends React.Component {
      * (e.g. subsequent images on fast internet connection), then we want to snap to real image. */
     this.longTransitionDuration = 1000
     this.snapTransitionDuration = 0
-    this.thresholdTimeToLookAtPlaceholder = 130
+    this.thresholdTimeToLookAtPlaceholder = 0
+    this.zIndexes = this.zIndexes()
 
     const isFullScreen = (this.props.location && this.props.location.state && this.props.location.state.isFullScreen ? this.props.location.state.isFullScreen : false)
 
     this.state = {
       hidePlaceholder: false,
       currentImageLoaded: false,
-      zIndexes: this.zIndexes(),
       userHasHadTimeToLookAtPlaceholder: false,
       isFullScreen: isFullScreen
     }
@@ -43,6 +44,7 @@ class PostcardTemplate extends React.Component {
     z["prefetchedImages"] = next++
     z["currentImagePlaceholder"] = next++
     z["currentImage"] = next++
+    z["flashCue"] = next++
     z["invisibleLinks"] = next++
     z["navButtons"] = next++
     return z
@@ -119,9 +121,7 @@ class PostcardTemplate extends React.Component {
      *  causing a small image from urlSet to be stretched to its limit, after
      *  which point the placeholder will start leaking through) */
     this.timer2 = setTimeout(
-      () => this.setState({
-        hidePlaceholder: true
-      }),
+      () => this.setState({ hidePlaceholder: true }),
       (this.longTransitionDuration + 200)
     )
   }
@@ -180,33 +180,34 @@ class PostcardTemplate extends React.Component {
           {globalState => (
               <>
                   <CornerCaseHandler g={globalState} currId={c.image.id} nextId={c.nextId} />
-                  
 
                   {/* Invisible helper links for prev/next navigation: clicking left side of the viewport links to prev, right side to next. */}
                   <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} className="noSelect" >
-                        <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
+                        <span style={{ position: "fixed", height: "100%", width: "50%", left: "0px", zIndex: this.zIndexes["invisibleLinks"] }}></span>
                   </Link>
                   <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} title={c.image.title} className="noSelect" >
-                        <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: this.state.zIndexes["invisibleLinks"] }}></span>
+                        <span style={{ position: "fixed", height: "100%", width: "50%", right: "0px", zIndex: this.zIndexes["invisibleLinks"] }}></span>
                   </Link>
 
-                  {/* Visual cues that the user can navigate to prev/next.
-                    * (Even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
+                  {/* Navbuttons: prev/next (even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
                   <Link to={`/images/${c.prevId}`} state={{ isFullScreen: this.state.isFullScreen }} >
-                    <FaArrowLeft style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Previous image" />
+                    <FaArrowLeft className="arrowButtons" style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Previous image" />
                   </Link>
                   <Link to={`/images/${c.nextId}`} state={{ isFullScreen: this.state.isFullScreen }} >
-                    <FaArrowRight style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next image" />
+                    <FaArrowRight className="arrowButtons" style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next image" />
                   </Link>
 
-                  {/* Top right 'x' to 'close' the image and return to gallery. */}
+                  {/* Flash cues for small screens instead of sticking prev/next buttons. */}
+                  <FlashCue g={globalState} additionalWait={this.longTransitionDuration} zIndex={this.zIndexes["flashCue"]} />
+
+                  {/* Navbutton: Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
                     <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} title="Back to Gallery" >
                       <FaTimesCircle style={{ right: "10px", top: "10px" }} />
                     </Link>
                   </span>
 
-                  {/* Fullscreen toggle. */}
+                  {/* Navbutton: Fullscreen toggle. */}
                   <span className="fullscreen">
                     {this.state.isFullScreen && (
                       <FaCompress style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Exit full screen mode" onClick={this.exitFullScreenAndRender} />
@@ -216,7 +217,7 @@ class PostcardTemplate extends React.Component {
                     )}
                   </span>
 
-                  {/* Download image button. */}
+                  {/* Navbutton: Download image. */}
                   <span className="download">
                     <a href={c.image.fluid.originalImg} download >
                       <FaDownload style={{ right: "80px", bottom: "12px" }} title="Download image" />
@@ -280,49 +281,6 @@ class PostcardTemplate extends React.Component {
                   <style jsx>
                     {`
 
-                        a {
-                          -webkit-touch-callout: none;
-                          -webkit-user-select: none;
-                          -khtml-user-select: none;
-                          -moz-user-select: none;
-                          -ms-user-select: none;
-                          user-select: none;
-                          -webkit-tap-highlight-color: transparent;
-                          outline: none !important;
-                        }
-                        a:focus {
-                          -webkit-touch-callout: none;
-                          -webkit-user-select: none;
-                          -khtml-user-select: none;
-                          -moz-user-select: none;
-                          -ms-user-select: none;
-                          user-select: none;
-                          -webkit-tap-highlight-color: transparent;
-                          outline: none !important;
-                        }
-                        :focus {
-                          -webkit-touch-callout: none;
-                          -webkit-user-select: none;
-                          -khtml-user-select: none;
-                          -moz-user-select: none;
-                          -ms-user-select: none;
-                          user-select: none;
-                          -webkit-tap-highlight-color: transparent;
-                          outline: none !important;
-                        }
-                        .noSelect {
-                          -webkit-touch-callout: none;
-                          -webkit-user-select: none;
-                          -khtml-user-select: none;
-                          -moz-user-select: none;
-                          -ms-user-select: none;
-                          user-select: none;
-                          -webkit-tap-highlight-color: transparent;
-                          :focus {
-                            outline: none !important;
-                          }
-                        }
-
                         img {
                           position: absolute;
                           margin-left: auto;
@@ -362,19 +320,25 @@ class PostcardTemplate extends React.Component {
                           opacity: ${this.state.currentImageLoaded ? 1 : 0};
                           transition: ${this.state.userHasHadTimeToLookAtPlaceholder ? this.longTransitionDuration : this.snapTransitionDuration}ms ease-in-out;
 
-                          z-index: ${this.state.zIndexes["currentImage"]}
+                          z-index: ${this.zIndexes["currentImage"]}
                         }
 
                         .currentImagePlaceholder {
                           height: 1337%;
                           border-radius: 0px;
 
-                          z-index: ${this.state.zIndexes["currentImagePlaceholder"]}
+                          z-index: ${this.zIndexes["currentImagePlaceholder"]}
                         }
 
                         .prefetchedImages {
                           opacity: 0;
-                          z-index: ${this.state.zIndexes["prefetchedImages"]}
+                          z-index: ${this.zIndexes["prefetchedImages"]}
+                        }
+
+                        :global(.arrowButtons) {
+                          @media only screen and (max-width: 1200px) {
+                            visibility: hidden;
+                          }
                         }
 
                         :global(svg) {
@@ -382,7 +346,7 @@ class PostcardTemplate extends React.Component {
                           font-size: 40px;
                           fill: ${theme.color.brand.primary};
                           opacity: 0.5;
-                          z-index: ${this.state.zIndexes["navButtons"]}
+                          z-index: ${this.zIndexes["navButtons"]}
                         }
 
                         :global(svg):hover {
