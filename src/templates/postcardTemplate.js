@@ -25,28 +25,14 @@ class PostcardTemplate extends React.Component {
 
     /* Magic numbers. */
     this.placeholderTransitionDuration = 1000
-    this.thresholdTimeToLookAtPlaceholder = 0
     this.zIndexes = this.zIndexes()
-    
-    /* Two different modes for transitioning between already-downloaded-images:
-     * 1. Just snap to next image
-     * 2. Fade-in transition (same as placeholder transition) (needs more work to look good for this purpose) */
-    const mode = 1
 
     this.state = {
-      currentImageLoaded: (mode === 2 ? false : this.getFromPassedStateOrDefault("currentImageLoaded", false)),
+      currentImageLoaded: this.getFromPassedStateOrDefault("currentImageLoaded", false),
       replacePlaceholderWith: this.getFromPassedStateOrDefault("replacePlaceholderWith", false),
-      isFullScreen: this.getFromPassedStateOrDefault("isFullScreen"),
+      isFullScreen: this.getFromPassedStateOrDefault("isFullScreen", false),
       nextImageLoaded: this.getFromPassedStateOrDefault("nextImageLoaded", false),
       prevImageLoaded: this.getFromPassedStateOrDefault("prevImageLoaded", false)
-    }
-
-    if (mode === 2) {
-      if (this.getFromPassedStateOrDefault("currentImageLoaded")) {
-        this.setState({
-          currentImageLoaded: true
-        })
-      }
     }
   }
 
@@ -100,7 +86,7 @@ class PostcardTemplate extends React.Component {
       navigate(`/images/${this.props.pageContext.prevId}`, { state: this.getStatePassForPrev() })
     } else if (event.keyCode === 39) {
       /* Right arrow. */
-      navigate(`/images/${this.props.pageContext.nextId}`, { state: this.getStatePassForPrev() })
+      navigate(`/images/${this.props.pageContext.nextId}`, { state: this.getStatePassForNext() })
     }
   }
 
@@ -155,7 +141,6 @@ class PostcardTemplate extends React.Component {
   }
 
   getStatePassForNext() {
-    //console.log(this.props.pageContext.image.fluid)
     return {
       isFullScreen: this.state.isFullScreen,
       currentImageLoaded: this.state.nextImageLoaded,
@@ -275,18 +260,6 @@ class PostcardTemplate extends React.Component {
                       src={c.image.fluid.tracedSVG}
                       alt=""
                       style={{ zIndex: this.zIndexes["currentImagePlaceholder"], height: "1337%", borderRadius: "0px" }}
-                    />
-                  )}
-                  
-                  {/* If current image is ready at page load, replace placeholder with previous image. */}
-                  {this.state.replacePlaceholderWith && (
-                    <img
-                      className={`decoratedImage ${this.state.currentImageLoaded ? "fade-out" : ""}`}
-                      src={this.state.replacePlaceholderWith.originalImg}
-                      srcSet={this.state.replacePlaceholderWith.srcSet}
-                      sizes={this.state.replacePlaceholderWith.sizes}
-                      alt=""
-                      style={{ zIndex: this.zIndexes["currentImagePlaceholder"] }}
                     />
                   )}
 
