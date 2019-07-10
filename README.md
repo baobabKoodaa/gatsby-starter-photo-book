@@ -14,10 +14,12 @@
 
 This is what happens when you click on an image from the gallery:
 1. A prefetched page is instantly rendered to you with a tracedSVG placeholder for the image, stylized into the site's theme.
-2. The browser chooses -- based on your device -- how large of an image it needs. (Gatsby has generated different sizes into `srcSet`.) The browser sends a request for the chosen image.
+2. The browser chooses how large of an image it needs for your device. (Gatsby has generated different sizes into `srcSet`.) The browser sends a request for the chosen image.
 3. When the image has loaded, two things happen:
-    - A crossfade transition begins from the placeholder to the actual image.
-    - The browser sends requests for the next 2 images and one previous image in anticipation that you may want to navigate to previous or next images. Note that this is superior to `<link rel="prefetch">` for two reasons: first, some browsers (like Chrome at this time) will start prefetching before the current image has fully loaded. In my experiments this ~doubled the time to render the current image. Secondly, you can't leverage srcSets with regular prefetching (the browser couldn't possibly know which sized image to download). The trick is to render transparent images on top of the current image so that the browser can choose the proper sized image -- and to render these images only _after_ the current image has loaded, so we don't steal bandwidth from it.
+    - A fade-over transition begins from the placeholder to the actual image.
+    - The browser sends requests for the next 2 images and one previous image in anticipation that you may want to navigate to previous or next images. Note that this is superior to `<link rel="prefetch">` for two reasons:
+        1. Some browsers (like Chrome at this time) will start prefetching before the current image has fully loaded. In my experiments this ~doubled the time to render the current image.
+        2. You can't leverage srcSets with regular prefetching (the browser couldn't possibly know which sized image to download). The trick is to render transparent images on top of the current image so that the browser can choose the proper sized image -- and to render these images only _after_ the current image has loaded, so we don't steal bandwidth from it.
 4. When the user navigates to next or previous image, it has hopefully loaded and can be shown instantly. In that case the placeholder transition animation can be skipped and we can snap from previous photo to next photo. If the image has not loaded, we will snap to placeholder and transition to the image once it loads.
 
 In addition, gallery's infinite scroll
