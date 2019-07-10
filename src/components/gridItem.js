@@ -21,7 +21,7 @@ class GridItem extends React.Component {
                               */}
                             <span id={`id${props.item.id}`}></span>
                             <Link to={`/images/${props.item.id}`} >
-                                <img src={props.item.s.src} alt="" title="" />
+                                <img src={props.item.thumb.src} alt="" title="" />
                             </Link>
                         </>
                     )}

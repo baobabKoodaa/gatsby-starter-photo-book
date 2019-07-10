@@ -69,8 +69,8 @@ exports.createPages = ({ graphql, actions}) => {
 
             images[nextFreeId] = {
                 "id": nextFreeId,
-                "l": edge.node.childImageSharp.fluid,
-                "s": thumb,
+                "fluid": edge.node.childImageSharp.fluid,
+                "thumb": thumb,
                 "title": title
             }
             nextFreeId++
@@ -85,10 +85,12 @@ exports.createPages = ({ graphql, actions}) => {
         for (var currentPage=1; currentPage<=countPages; currentPage++) {
             const pathSuffix = (currentPage>1? currentPage : "") /* To create paths "/", "/2", "/3", ... */
 
-            /* Collect images needed for this page. */
+            /* Collect ids,thumbs needed for this page. */
             const startIndexInclusive = countImagesPerPage * (currentPage - 1) + 1
             const endIndexExclusive = startIndexInclusive + countImagesPerPage
-            const pageImages = images.slice(startIndexInclusive, endIndexExclusive)
+            const pageImages = images
+                .slice(startIndexInclusive, endIndexExclusive)
+                .map(image => { return { id: image.id, thumb: image.thumb }})
 
             /* Combine all data needed to construct this page. */
             const pageData = {
@@ -119,9 +121,9 @@ exports.createPages = ({ graphql, actions}) => {
                     image: images[currId],
                     nextId: nextId,
                     prevId: prevId,
-                    prefetch1: images[nextId].l,
-                    prefetch2: images[next2Id].l,
-                    prefetch3: images[prevId].l
+                    prefetch1: images[nextId].fluid,
+                    prefetch2: images[next2Id].fluid,
+                    prefetch3: images[prevId].fluid,
                 }
             }
             createPage(pageData)

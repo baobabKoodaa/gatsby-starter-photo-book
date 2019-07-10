@@ -215,7 +215,7 @@ class PostcardTemplate extends React.Component {
 
                   {/* Download image button. */}
                   <span className="download">
-                    <a href={c.image.l.originalImg} download >
+                    <a href={c.image.fluid.originalImg} download >
                       <FaDownload style={{ right: "80px", bottom: "12px" }} title="Download image" />
                     </a>
                   </span>
@@ -223,9 +223,9 @@ class PostcardTemplate extends React.Component {
                   {/* Display current image. */}
                   <img
                     className="currentImage"
-                    src={c.image.l.originalImg}
-                    srcSet={c.image.l.srcSet}
-                    sizes={c.image.l.sizes}
+                    src={c.image.fluid.originalImg}
+                    srcSet={c.image.fluid.srcSet}
+                    sizes={c.image.fluid.sizes}
                     alt=""
                     title={c.image.title}
                     importance="high" /* Resource prioritization hint. */
@@ -236,7 +236,7 @@ class PostcardTemplate extends React.Component {
                   {!this.state.hidePlaceholder && (
                     <img
                       className="currentImagePlaceholder"
-                      src={c.image.l.tracedSVG}
+                      src={c.image.fluid.tracedSVG}
                       alt=""
                     />
                   )}
