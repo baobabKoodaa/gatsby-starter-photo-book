@@ -1,4 +1,5 @@
 import React from "react"
+import config from "../config.yaml"
 
 export default class Footer extends React.Component {
 
@@ -24,21 +25,22 @@ export default class Footer extends React.Component {
     }
 
     render() {
+
         return(
             <footer>
                 <br/><br/>
                 <center>
                     <p>
-                        <a href="https://drive.google.com/file/d/1XYZu3c6Z0XQ8nLFWIW2SuWVGNKmaYQGA/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+                        <a href={config.linkPhotoset} target="_blank" rel="noopener noreferrer">
                             Lataa kuvat 
-                        </a> | <a href="https://github.com/baobabKoodaa/gatsby-starter-photo-book" target="_blank" rel="noopener noreferrer">
+                        </a> | <a href={config.linkSource} target="_blank" rel="noopener noreferrer">
                             Sivun lähdekoodi
                         </a> | <span onClick={this.toggle.bind(this)} style={{ cursor: "pointer" }}>
                             Kameran takana
                         </span>
                     </p>
                     <p style={{ maxWidth: "400px", color: "black", display: this.state.showMoreText ? "block" : "none" }}>
-                        <a href="https://www.hannutiainenphotography.com/" target="_blank" rel="noopener noreferrer">
+                        <a href={config.linkPhotographer} target="_blank" rel="noopener noreferrer">
                             Hannu Tiainen
                         </a> oli mahtava valokuvaajamme. Osa sivulla näkyvistä kuvista on myös ihanien vieraidemme ottamia. Jos mietit yksittäisen kuvan alkuperää, saat joitakin tietoja pitämällä hiirtä suurikokoisen kuvan päällä.
                     </p>
