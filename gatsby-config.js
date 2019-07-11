@@ -1,8 +1,8 @@
 module.exports = {
-  pathPrefix: `/kuvat/`,
+  pathPrefix: "/kuvat/",
   siteMetadata: {
-    title: `Gatsby Starter Infinite Scroll`,
-    description: `Need infinite scroll or pagination in your Gatsby project? This starter is for you.`,
+    title: `Gatsby Starter Photo Book`,
+    description: `A Gatsby starter for sharing photosets.`,
     author: `baobabKoodaa`,
   },
   plugins: [

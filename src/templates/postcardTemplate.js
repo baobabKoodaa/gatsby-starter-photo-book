@@ -275,7 +275,7 @@ class PostcardTemplate extends React.Component {
                         srcSet={c.prefetchNext1.srcSet}
                         sizes={c.prefetchNext1.sizes}
                         alt=""
-                        importance="high" /* User most likely wants this next. */
+                        importance="low"
                         onLoad={this.nextImageLoaded}
                       />
                       <img
