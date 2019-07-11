@@ -10,16 +10,26 @@
 - A lot of **performance optimizations** for image delivery (both by Gatsby & way beyond what Gatsby can do).
 - Endlessly **polished UX**.
 
+## :zap: Get started
+
+1. Fork and `npm install`.
+2. Drop your photos in `content/images`.
+3. Run in dev mode with `gatsby develop`.  
+...and you're all set! (Ok you probably want to edit some text, colors, favicon, etc. - but almost done!)
+
 ## Performance optimizations
 
 This is what happens when you click on an image from the gallery:
-1. A prefetched page is instantly rendered to you with a tracedSVG placeholder for the image, stylized into the site's theme.
-2. The browser chooses how large of an image it needs for your device. (Gatsby has generated different sizes into `srcSet`.) The browser sends a request for the chosen image.
+1. A **prefetched page** is instantly rendered to you with a **tracedSVG placeholder** for the image, stylized into the site's theme.
+2. Different sized versions of images have been generated, so the **browser can choose how large of an image it needs** for the user's device.
 3. When the image has loaded, two things happen:
     - A fade-over transition begins from the placeholder to the actual image.
-    - The browser sends requests for the next 2 images and one previous image in anticipation that you may want to navigate to previous or next images. Note that this is superior to `<link rel="prefetch">` for two reasons:
-        1. Some browsers (like Chrome at this time) will start prefetching before the current image has fully loaded. In my experiments this ~doubled the time to render the current image.
-        2. You can't leverage srcSets with regular prefetching (the browser couldn't possibly know which sized image to download). The trick is to render transparent images on top of the current image so that the browser can choose the proper sized image -- and to render these images only _after_ the current image has loaded, so we don't steal bandwidth from it.
+    - The browser sends requests for the next 2 images and one previous image in anticipation that you may want to navigate to previous or next images. Note that this is superior to `<link rel="prefetch">` for 3 reasons, in order of importance:
+        1. You can't leverage srcSets with regular prefetching (the browser couldn't possibly know which sized image to download).
+        2. Some browsers (like Chrome at this time) will start prefetching before the current image has fully loaded. In my experiments this ~doubled the time to deliver the current image.
+        3. Browsers can choose to ignore prefetch tags at their discretion.
+      
+      **The trick** that I use here: render transparent images on top of the current image so that the browser can choose the proper sized image. These images are added to the DOM only _after_ the current image has loaded, so we don't steal bandwidth from it.
 4. When the user navigates to next or previous image, it has hopefully loaded and can be shown instantly. In that case the placeholder transition animation can be skipped and we can snap from previous photo to next photo. If the image has not loaded, we will snap to placeholder and transition to the image once it loads.
 
 In addition, gallery's infinite scroll
@@ -35,13 +45,6 @@ In addition, gallery's infinite scroll
     - Large screens: the photo is decorated like a postcard in the center of the screen with buttons usually outside the photo.
     - Small screens: maximum screen real estate for photos. Reduced decoration. Buttons can overlay on the photo, but the most obtrusive buttons (prev/next) are hidden. When the user first navigates to an image, they are flashed a visual cue to indicate that they can navigate to prev/next by clicking anywhere. The cue is flashed again if the user returns to the site later, but it is not flashed again during the same session.
 - You can tell a story with your images, because the gallery has **row-based order** (many other photo website implementations use column-based order, e.g. masonry CSS, which looks great, but causes the order of images to feel random to users who are used to scanning photos horizontally.)
-
-## :zap: Get started
-
-1. Fork and `npm install`.
-2. Drop your photos in `content/images`.
-3. Run in dev mode with `gatsby develop`.  
-...and you're all set! (Ok you probably want to edit some text, colors, favicon, etc. - but almost done!)
 
 ## :sparkles: Tips
 
