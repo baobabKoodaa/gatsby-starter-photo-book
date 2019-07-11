@@ -6,7 +6,7 @@
 
 - **Gallery**: auto-generated thumbnails are presented on **CSS Grid** with **infinite scroll**.
 - Beautiful **"postcard" view** for photos with **fullscreen toggle**.
-- Both views are **responsive** with **minimal whitespace**.
+- Both views are **responsive** with **minimal whitespace** and **polished UX**.
 - Many **performance optimizations** for image delivery (both by Gatsby & way beyond what Gatsby can do).
 
 ## :zap: Get started
@@ -34,13 +34,13 @@ This is what happens when you click on an image from the gallery:
 In addition, gallery's infinite scroll
 - Loads more items _before_ you scroll all the way down to look at loading spinners or blur-ups.
 - Has pre-rendered the first page of results so it can be rendered without additional metadata fetches.
-- Does metadata fetches ~20 items at a time (as opposed to _all_ metadata, like many other implementations).
+- Does metadata fetches ~20 items at a time (as opposed to fetching _all_ metadata at initial page load, like many other implementations).
 
 ## :gem: UX
 
 - Friendly to users who have disabled JS. All important features are either designed to work without JS or have **non JS fallback**. For example, infinite scroll **gracefully degrades** into pagination.
 - When the user clicks 'x' to return from postcard view to gallery, **scroll position** is set to the thumbnail of the last photo they viewed and a visual indicator is given to help the user adjust their sight to the next unseen photo. This is better than simply remembering scroll position, because a user can browse several photos in postcard view before returning to gallery (in that case we want to scroll to the last thumbnail, not the first). This feature degrades gracefully if the user navigates with the browser's back button instead of clicking 'x' (in that case, we just remember the scroll position).
-- The postcard view is slightly different on small vs large screens:
+- The postcard view is **slightly different on small vs large screens**:
     - Large screens: the photo is decorated like a postcard in the center of the screen with buttons usually outside the photo.
     - Small screens: maximum screen real estate for photos. Reduced decoration. Buttons can overlay on the photo, but the most obtrusive buttons (prev/next) are hidden. When the user first navigates to an image, they are flashed a visual cue to indicate that they can navigate to prev/next by clicking anywhere. The cue is flashed again if the user returns to the site later, but it is not flashed again during the same session.
 - You can tell a story with your images, because the gallery has **row-based order** (many other photo website implementations use column-based order, e.g. masonry CSS, which looks great, but causes the order of images to feel random to users who are used to scanning photos horizontally.)
