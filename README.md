@@ -16,7 +16,7 @@
 3. Run in dev mode with `gatsby develop`.  
 ...and you're all set! (Ok you probably want to edit some text, colors, favicon, etc. - but almost done!)
 
-## Performance
+## :cyclone: Performance
 
 This is what happens when you click on an image from the gallery:
 1. A **prefetched page** is instantly rendered to you with a **tracedSVG placeholder** for the image, stylized into the site's theme.
@@ -36,7 +36,7 @@ In addition, gallery's infinite scroll
 - Has pre-rendered the first page of results so it can be rendered without additional metadata fetches.
 - Does metadata fetches ~20 items at a time (as opposed to _all_ metadata, like many other implementations).
 
-## UX
+## :gem: UX
 
 - Friendly to users who have disabled JS. All important features are either designed to work without JS or have **non JS fallback**. For example, infinite scroll **gracefully degrades** into pagination.
 - When the user clicks 'x' to return from postcard view to gallery, **scroll position** is set to the thumbnail of the last photo they viewed and a visual indicator is given to help the user adjust their sight to the next unseen photo. This is better than simply remembering scroll position, because a user can browse several photos in postcard view before returning to gallery (in that case we want to scroll to the last thumbnail, not the first). This feature degrades gracefully if the user navigates with the browser's back button instead of clicking 'x' (in that case, we just remember the scroll position).

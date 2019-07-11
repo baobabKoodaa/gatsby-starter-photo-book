@@ -1,7 +1,7 @@
 {
-  "name": "gatsby-starter-infinite-scroll",
+  "name": "gatsby-starter-photo-book",
   "private": true,
-  "description": "Infinite Scroll and Pagination with Gatsby",
+  "description": "A Gatsby starter for sharing photosets.",
   "version": "1.0.0",
   "author": "Baobab Koodaa <npm1232983x@baobab.fi>",
   "dependencies": {
