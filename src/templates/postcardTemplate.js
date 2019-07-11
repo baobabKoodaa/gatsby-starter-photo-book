@@ -271,27 +271,27 @@ class PostcardTemplate extends React.Component {
                     <>
                       <img
                         className="prefetchedImages"
-                        src={c.prefetch1.originalImg}
-                        srcSet={c.prefetch1.srcSet}
-                        sizes={c.prefetch1.sizes}
+                        src={c.prefetchNext1.originalImg}
+                        srcSet={c.prefetchNext1.srcSet}
+                        sizes={c.prefetchNext1.sizes}
                         alt=""
-                        importance="high" /* TODO experiment */
+                        importance="high" /* User most likely wants this next. */
                         onLoad={this.nextImageLoaded}
                       />
                       <img
                         className="prefetchedImages"
-                        src={c.prefetch2.originalImg}
-                        srcSet={c.prefetch2.srcSet}
-                        sizes={c.prefetch2.sizes}
+                        src={c.prefetchPrev.originalImg}
+                        srcSet={c.prefetchPrev.srcSet}
+                        sizes={c.prefetchPrev.sizes}
                         alt=""
                         importance="low"
                         onLoad={this.prevImageLoaded}
                       />
                       <img
                         className="prefetchedImages"
-                        src={c.prefetch3.originalImg}
-                        srcSet={c.prefetch3.srcSet}
-                        sizes={c.prefetch3.sizes}
+                        src={c.prefetchNext2.originalImg}
+                        srcSet={c.prefetchNext2.srcSet}
+                        sizes={c.prefetchNext2.sizes}
                         alt=""
                         importance="low"
                       />

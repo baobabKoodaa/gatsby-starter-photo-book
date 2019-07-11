@@ -121,9 +121,9 @@ exports.createPages = ({ graphql, actions}) => {
                     image: images[currId],
                     nextId: nextId,
                     prevId: prevId,
-                    prefetch1: images[nextId].fluid,
-                    prefetch2: images[next2Id].fluid,
-                    prefetch3: images[prevId].fluid,
+                    prefetchNext1: images[nextId].fluid,
+                    prefetchNext2: images[next2Id].fluid,
+                    prefetchPrev: images[prevId].fluid,
                 }
             }
             createPage(pageData)
