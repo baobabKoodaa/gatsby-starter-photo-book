@@ -39,7 +39,7 @@ In addition, gallery's infinite scroll
 ## :gem: UX
 
 - Friendly to users who have disabled JS. All important features are either designed to work without JS or have **non JS fallback**. For example, infinite scroll **gracefully degrades** into pagination.
-- **No flicker** when the user navigates between photos (this was actually _very_ difficult to implement without sacricing pre-rendered pages that work without JS and without sacrificing placeholder images).
+- **No flicker** when the user navigates between photos (this was actually _very_ difficult to implement without sacrificing pre-rendered pages that work without JS and without sacrificing placeholder images).
 - When the user clicks 'x' to return from postcard view to gallery, **scroll position** is set to the thumbnail of the last photo they viewed and a visual indicator is given to help the user adjust their sight to the next unseen photo. This is better than simply remembering scroll position, because a user can browse several photos in postcard view before returning to gallery (in that case we want to scroll to the last thumbnail, not the first). This feature degrades gracefully if the user navigates with the browser's back button instead of clicking 'x' (in that case, we just remember the scroll position).
 - The postcard view is **slightly different on small vs large screens**:
     - Large screens: the photo is decorated like a postcard in the center of the screen with buttons usually outside the photo.
