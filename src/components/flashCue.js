@@ -49,6 +49,8 @@ export class FlashCue extends React.Component {
                                 font-size: 20px;
                                 animation: flash 4s linear;
                                 z-index: ${this.zIndex};
+
+
                             }
 
                             @media only screen and (max-width: 1200px) {
@@ -58,7 +60,7 @@ export class FlashCue extends React.Component {
                                         transform: scale(1);
                                     }
                                     50% {
-                                        opacity: 0.7;
+                                        opacity: 1;
                                         transform: scale(2);
                                     }
                                 }

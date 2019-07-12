@@ -215,8 +215,10 @@ class PostcardTemplate extends React.Component {
                   </Link>
 
                   {/* Flash cues for small screens instead of sticking prev/next buttons. */}
-                  <FlashCue g={globalState} additionalWait={this.placeholderTransitionDuration} zIndex={this.zIndexes["flashCue"]} />
-
+                  {this.state.currentImageLoaded && (
+                    <FlashCue g={globalState} additionalWait={this.placeholderTransitionDuration} zIndex={this.zIndexes["flashCue"]} />
+                  )}
+                 
                   {/* Navbutton: Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
                     <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} title="Back to Gallery" >
