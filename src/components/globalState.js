@@ -35,8 +35,15 @@ export class GlobalState extends React.Component {
             updateState: this.updateState,
             hasMore: this.hasMore,
             loadMore: this.loadMore,
+            initialRender: true,
             flashCueShown: false
         }
+    }
+
+    componentDidMount() {
+        this.setState({
+            initialRender: false
+        })
     }
 
     isInitializing = () => {

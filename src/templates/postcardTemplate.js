@@ -241,20 +241,28 @@ class PostcardTemplate extends React.Component {
                     </a>
                   </span>
 
-                  {/* Display current image. */}
+                  {/* Current image.
+                    *     Includes a workaround to guarantee onLoad firing.
+                    *     The issue:
+                    *            If the image is already in cache, the browser may not fire onLoad event.
+                    *            Occurs on initial load only, not with subsequent SPA navigation.
+                    *     The workaround:
+                    *            During the initial render we add the img to DOM with onLoad but without src properties.
+                    *            Then we immediately re-render with the added src properties, causing onLoad to fire
+                    *            even if the images are found in cache. */}
                   <img
                     className={`currentImage decoratedImage ${this.state.currentImageLoaded ? "fade-in" : "hide"}`}
-                    src={c.image.fluid.originalImg}
-                    srcSet={c.image.fluid.srcSet}
-                    sizes={c.image.fluid.sizes}
+                    onLoad={this.currentImageLoaded}
+                    src={globalState.initialRender ? "" : c.image.fluid.originalImg} /* Workaround for onload firing. */
+                    srcSet={globalState.initialRender ? "" : c.image.fluid.srcSet} /* Workaround for onload firing. */
+                    sizes={globalState.initialRender ? "" : c.image.fluid.sizes} /* Workaround for onload firing. */
                     alt=""
                     title={c.image.title}
                     importance="high" /* Resource prioritization hint. */
                     style={{ zIndex: this.zIndexes["currentImage"] }}
-                    onLoad={this.currentImageLoaded}
                   />
 
-                  {/* If current image is not ready, display placeholder until current image has loaded, then transition. */}
+                  {/* Placeholder: If current image is not ready, display placeholder until current image has loaded, then transition. */}
                   <img
                     className={`currentImagePlaceholder ${this.state.currentImageLoaded ? "fade-out" : ""}`}
                     src={c.image.fluid.tracedSVG}
@@ -262,12 +270,19 @@ class PostcardTemplate extends React.Component {
                     style={{ zIndex: this.zIndexes["currentImagePlaceholder"], height: "1337%", borderRadius: "0px" }}
                   />
 
-                  {/* If JS is disabled, degrade gracefully from placeholder-transition to just-show-current-image. */}
+                  {/* Fallback: If JS is disabled, degrade gracefully from placeholder-transition to just-show-current-image. */}
                   <noscript>
+                      <img
+                        className="currentImage decoratedImage"
+                        src={c.image.fluid.originalImg}
+                        srcSet={c.image.fluid.srcSet}
+                        sizes={c.image.fluid.sizes}
+                        alt=""
+                        title={c.image.title}
+                        importance="high"
+                        style={{ zIndex: this.zIndexes["currentImage"] }}
+                      />
                       <style>{`
-                        .currentImage {
-                          opacity: 1 !important
-                        }
                         .currentImagePlaceholder {
                           opacity: 0 !important
                         }
@@ -275,32 +290,32 @@ class PostcardTemplate extends React.Component {
                   </noscript>
 
                   {/* Preload adjacent images (hide with CSS).
-                    * Why like this, and not with link rel prefetch?
-                    * 1. link rel prefetch sometimes eats bandwidth from current image.
-                    * 2. link rel prefetch can not be used with srcSet. */}
+                    *     Why like this, and not with link rel prefetch?
+                    *     1. link rel prefetch sometimes eats bandwidth from current image.
+                    *     2. link rel prefetch can not be used with srcSet. */}
                   {this.state.currentImageLoaded && (
                     <>
                       <img
-                        className="prefetchedImages"
-                        src={c.prefetchNext1.originalImg}
-                        srcSet={c.prefetchNext1.srcSet}
-                        sizes={c.prefetchNext1.sizes}
-                        alt=""
-                        importance="low"
                         onLoad={this.nextImageLoaded}
-                      />
-                      <img
                         className="prefetchedImages"
-                        src={c.prefetchPrev.originalImg}
-                        srcSet={c.prefetchPrev.srcSet}
-                        sizes={c.prefetchPrev.sizes}
+                        src={globalState.initialRender ? "" : c.prefetchNext1.originalImg} /* Workaround for onload firing. */
+                        srcSet={globalState.initialRender ? "" : c.prefetchNext1.srcSet} /* Workaround for onload firing. */
+                        sizes={globalState.initialRender ? "" : c.prefetchNext1.sizes} /* Workaround for onload firing. */
                         alt=""
                         importance="low"
+                      />
+                      <img
                         onLoad={this.prevImageLoaded}
+                        className="prefetchedImages"
+                        src={globalState.initialRender ? "" : c.prefetchPrev.originalImg} /* Workaround for onload firing. */
+                        srcSet={globalState.initialRender ? "" : c.prefetchPrev.srcSet} /* Workaround for onload firing. */
+                        sizes={globalState.initialRender ? "" : c.prefetchPrev.sizes} /* Workaround for onload firing. */
+                        alt=""
+                        importance="low"
                       />
                       <img
                         className="prefetchedImages"
-                        src={c.prefetchNext2.originalImg}
+                        src={c.prefetchNext2.originalImg} /* No onLoad event attached so no need for workaround here. */
                         srcSet={c.prefetchNext2.srcSet}
                         sizes={c.prefetchNext2.sizes}
                         alt=""
