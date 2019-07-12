@@ -29,7 +29,6 @@ class PostcardTemplate extends React.Component {
 
     this.state = {
       currentImageLoaded: this.getFromPassedStateOrDefault("currentImageLoaded", false),
-      replacePlaceholderWith: this.getFromPassedStateOrDefault("replacePlaceholderWith", false),
       isFullScreen: this.getFromPassedStateOrDefault("isFullScreen", false),
       nextImageLoaded: this.getFromPassedStateOrDefault("nextImageLoaded", false),
       prevImageLoaded: this.getFromPassedStateOrDefault("prevImageLoaded", false)
@@ -131,7 +130,7 @@ class PostcardTemplate extends React.Component {
     if (this.timer2) {
       clearTimeout(this.timer2)
     }
-    if (typeof document !== 'undefined') {
+    if (typeof document !== 'undefined' && document.removeEventListener) {
       document.removeEventListener("keydown", this.handleKeyDown)
       document.removeEventListener('webkitfullscreenchange', this.fullScreenChangeHandler, false);
       document.removeEventListener('mozfullscreenchange', this.fullScreenChangeHandler, false);
@@ -144,7 +143,6 @@ class PostcardTemplate extends React.Component {
     return {
       isFullScreen: this.state.isFullScreen,
       currentImageLoaded: this.state.nextImageLoaded,
-      replacePlaceholderWith: (this.state.nextImageLoaded ? this.props.pageContext.image.fluid : false),
       prevImageLoaded: this.state.currentImageLoaded
     }
   }
@@ -153,7 +151,6 @@ class PostcardTemplate extends React.Component {
     return {
       isFullScreen: this.state.isFullScreen,
       currentImageLoaded: this.state.prevImageLoaded,
-      replacePlaceholderWith: (this.state.prevImageLoaded ? this.props.pageContext.image.fluid : false),
       nextImageLoaded: this.state.currentImageLoaded
     }
   }
@@ -189,6 +186,10 @@ class PostcardTemplate extends React.Component {
                 -webkit-tap-highlight-color: transparent !important;
                 outline: none !important;
               }
+              #gatsby-noscript {
+                display: none;
+              }
+
             `}
           </style>
         </Helmet>
@@ -242,7 +243,7 @@ class PostcardTemplate extends React.Component {
 
                   {/* Display current image. */}
                   <img
-                    className={`decoratedImage ${this.state.currentImageLoaded ? "fade-in" : "hide"}`}
+                    className={`currentImage decoratedImage ${this.state.currentImageLoaded ? "fade-in" : "hide"}`}
                     src={c.image.fluid.originalImg}
                     srcSet={c.image.fluid.srcSet}
                     sizes={c.image.fluid.sizes}
@@ -254,14 +255,24 @@ class PostcardTemplate extends React.Component {
                   />
 
                   {/* If current image is not ready, display placeholder until current image has loaded, then transition. */}
-                  {!this.state.replacePlaceholderWith && (
-                    <img
-                      className={`currentImagePlaceholder ${this.state.currentImageLoaded ? "fade-out" : ""}`}
-                      src={c.image.fluid.tracedSVG}
-                      alt=""
-                      style={{ zIndex: this.zIndexes["currentImagePlaceholder"], height: "1337%", borderRadius: "0px" }}
-                    />
-                  )}
+                  <img
+                    className={`currentImagePlaceholder ${this.state.currentImageLoaded ? "fade-out" : ""}`}
+                    src={c.image.fluid.tracedSVG}
+                    alt=""
+                    style={{ zIndex: this.zIndexes["currentImagePlaceholder"], height: "1337%", borderRadius: "0px" }}
+                  />
+
+                  {/* If JS is disabled, degrade gracefully from placeholder-transition to just-show-current-image. */}
+                  <noscript>
+                      <style>{`
+                        .currentImage {
+                          opacity: 1 !important
+                        }
+                        .currentImagePlaceholder {
+                          opacity: 0 !important
+                        }
+                      `}</style>
+                  </noscript>
 
                   {/* Preload adjacent images (hide with CSS).
                     * Why like this, and not with link rel prefetch?

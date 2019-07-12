@@ -27,3 +27,6 @@ a {
 a:focus {
     outline: 0;
 }
+#gatsby-noscript {
+    display: none;
+}

@@ -50,7 +50,7 @@ export class GlobalState extends React.Component {
     loadMore = () => {
         const pageNum = this.state.cursor
         this.setState(state => ({ cursor: state.cursor+1 })) // TODO: make sure this is guaranteed to set state before another loadMore may be able to fire!
-        fetch(`/paginationJson/index${pageNum > 1 ? pageNum : ""}.json`)
+        fetch(`${__PATH_PREFIX__}/paginationJson/index${pageNum > 1 ? pageNum : ""}.json`)
           .then(res => res.json(), error => {}) //In some cases cornerCaseHandler tries to fetch pages that don't exist. TODO fix. Until then, suppress these harmless errors.
           .then(
             res => {
