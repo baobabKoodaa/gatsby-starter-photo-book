@@ -35,12 +35,14 @@
 There's some standard optimizations by Gatsby, like generating different sized versions of images and allowing the **browser to choose how large of an image it needs** for your device. There's also a couple interesting custom optimizations that deliver a huge boost in performance. One is related to image prefetching (in postcard view) and the other is related to page prefetching (in gallery view).
 
 In postcard view, once the current image has loaded, the browser sends requests for the next 2 images and one previous image in anticipation that you may want to navigate to previous or next images. Note that this is superior to standard `<link rel="prefetch">` for 3 reasons, in order of importance:
+
     1. You can't leverage srcSets with regular prefetching (the browser couldn't possibly know which sized image to download).
     2. Some browsers (like Chrome at this time) will start prefetching before the current image has fully loaded. In my experiments this ~doubled the time to deliver the current image.
     3. Browsers can choose to ignore prefetch tags at their discretion.
 **The trick** that I use here: add transparent images on top of the current image so that the browser can choose the proper sized image from the srcSet. These images are added to the DOM only _after_ the current image has loaded, so we don't steal bandwidth from it.
 
 You may notice there are two kinds of paths to photos: `/images/58` and `/images/fromGallery?id=58`. That's ugly, I know. Let me explain.
+
     1. The first version of this starter used query parameters only (the `?id=58` URLs). These pages wouldn't work without JavaScript, so that's unacceptable.
     2. In order to support non JS users we moved onto generated pages with URLs like `/images/58`. This meant that each link from the gallery had to be prefetched separately (instead of prefetching a single `/images/fromGallery` page). Sometimes when a lot of thumbnails were loading on mobile, there would be a few seconds delay between clicking a thumbnail and rendering page, so that's unacceptable.
     3. The obvious solution was to use both kinds of paths: query parameters for gallery links and generated pages for everything else. (And, obviously, gallery links have to point to different paths between JS and non JS users.) But now we have 2 different URL paths visible to the end user, that's not acceptable.
