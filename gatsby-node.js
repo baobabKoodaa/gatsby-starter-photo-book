@@ -57,7 +57,7 @@ exports.createPages = ({ graphql, actions}) => {
         imageEdges.forEach(edge => {
             const name = parseName(edge.node.absolutePath)
             /* Infer photographer attribution from name. */
-            const title = name.endsWith("_v") ? "Photographed by our wonderful guests" : "Hannu Tiainen Photography"
+            const title = name.endsWith("_v") ? "Juhlavieraan ottama kuva" : "Hannu Tiainen Photography"
             
             /* Use thumbnail from crop helper if that's available. */ 
             const key = name+"_crophelper"
