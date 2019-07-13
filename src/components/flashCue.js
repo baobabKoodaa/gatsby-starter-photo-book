@@ -5,7 +5,7 @@ export class FlashCue extends React.Component {
 
     constructor(props) {
         super(props)
-        this.wait = 1000 + props.additionalWait
+        this.wait = 0 + props.additionalWait
         this.startShowingFlash = this.startShowingFlash.bind(this)
         this.zIndex = props.zIndex
         this.state = {
