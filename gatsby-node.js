@@ -141,9 +141,9 @@ exports.createPages = ({ graphql, actions}) => {
             createPage(pageData)
         }
 
-        /* Create the special 'dummy' page needed for instant navigation from Gallery to image (explained in README). */
+        /* Create a special dummy page needed for instant navigation from Gallery to image (explained in README). */
         createPage({
-            path: `/images/`,
+            path: `/images/fromGallery`,
             component: path.resolve(`src/templates/postcardTemplate.js`),
             context: dummyContext()
         })
@@ -193,7 +193,7 @@ function dummyContext() {
         id: 1,
         fluid: dummyFluid,
         fluidWithoutPlaceholder: dummyFluid,
-        thumb: false,
+        thumb: {},
         title: ""
     }
     return {

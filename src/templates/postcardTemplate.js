@@ -94,15 +94,7 @@ class PostcardTemplate extends React.Component {
   }
 
   useOfQueryParams() {
-    return typeof window !== 'undefined' && window && window.location.href.includes("/images/?id=")
-  }
-
-  legitUseOfQueryParams() {
-    return (this.useOfQueryParams() && this.getFromPassedStateOrDefault("pageContext"))
-  }
-
-  illegitUseOfQueryParams() {
-    return (this.useOfQueryParams() && !this.getFromPassedStateOrDefault("pageContext"))
+    return typeof window !== 'undefined' && window && window.location.href.includes("/images/fromGallery?id=")
   }
 
   componentDidMount() {
@@ -121,9 +113,9 @@ class PostcardTemplate extends React.Component {
   }
 
   componentWillMount() {
-     if (this.illegitUseOfQueryParams()) {
+     if (this.useOfQueryParams() && !this.getFromPassedStateOrDefault("pageContext")) {
       /* Safeguard against the (unlikely) case where someone uses /images?id=... as an entry-point to the site. */
-      const id = window.location.href.split("/images/?id=")[1]
+      const id = window.location.href.split("/images/fromGallery?id=")[1]
       navigate(
         `/images/${id}`,
         {
@@ -134,23 +126,6 @@ class PostcardTemplate extends React.Component {
   }
 
   currentImageLoaded() {
-    if (this.legitUseOfQueryParams()) {
-      /* Navigate to "shareable" URL which renders the same DOM. More info in README. */
-      const id = window.location.href.split("/images/?id=")[1]
-      navigate(
-        `/images/${id}`,
-        {
-          state: {
-            currentImageLoaded: false, // Has to be false initially to trigger the placeholder transition.
-            isFullScreen: this.state.isFullScreen,
-            pageContext: this.state.pageContext
-          },
-          replace: true
-        }
-      )
-      return
-    }
-
     /* Trigger re-render, start possible transition. */
     this.setState({
       currentImageLoaded: true

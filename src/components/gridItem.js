@@ -7,7 +7,7 @@ class GridItem extends React.Component {
     handleNavigation(e) {
         /* This unconventional navigation is explained in README. */
         navigate(
-            `/images/?id=${this.props.item.id}`,
+            `/images/fromGallery?id=${this.props.item.id}`,
             {
                 state: { pageContext: this.props.item.pageContext }
             }
