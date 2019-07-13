@@ -18,8 +18,9 @@ class GridItem extends React.Component {
                             {/* 
                               * The span is used for anchoring scroll position when the user clicks 'x' to return to main page.
                               * Do not refactor the id into Link or Chrome will sometimes scroll into _middle_ of img instead of top.
+                              * Do not refactor the hidden dot away or Firefox will set scroll position to the _bottom_ of img instead of top.
                               */}
-                            <span id={`id${props.item.id}`}></span>
+                            <span id={`id${props.item.id}`} style={{ top: "0px", position: "absolute", display: "hidden" }} >.</span>
                             <Link to={`/images/${props.item.id}`} >
                                 <img src={props.item.thumb.src} alt="" title="" />
                             </Link>
