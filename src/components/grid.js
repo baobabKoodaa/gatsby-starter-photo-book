@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "gatsby"
 
 import GridItem from "./gridItem.js";
 
@@ -16,7 +17,7 @@ const Grid = (props) => {
                 /* Add gridItems that we have received metadata for. */
                 numberOfItemsOnLatestPage = g[key].length
                 for (j=0; j<numberOfItemsOnLatestPage; j++) {
-                    items.push(<GridItem js={js} item={g[key][j]} key={"gi"+(i++)} highlight={props.highlight} />)
+                    items.push(<GridItem g={g} js={js} item={g[key][j]} key={"gi"+(i++)} highlight={props.highlight} />)
                 }
             }
             else {
@@ -25,7 +26,7 @@ const Grid = (props) => {
                     /* For each page that we have fetched, but haven't received metadata for, render empty gridItems. */
                     const expectedNumberOfItemsOnPage = numberOfItemsOnLatestPage
                     for (j=0; j<expectedNumberOfItemsOnPage; j++) {
-                        items.push(<GridItem key={"gi"+(i++)}/>)
+                        items.push(<GridItem g={g} key={"gi"+(i++)}/>)
                     }
                 }
                 /* Don't add anything for pages that the user hasn't fetched (scrolled to) yet. */
@@ -39,11 +40,14 @@ const Grid = (props) => {
          * - And the very first render on initial pageload. 
          * In these cases we simply render the items of this page (corresponds to a path like "/", "/2", "/3",...)
          */
-        props.pageContext.pageImages.forEach(item => items.push(<GridItem item={item} key={"gi"+(i++)}/>))
+        props.pageContext.pageImages.forEach(item => items.push(<GridItem g={g} item={item} key={"gi"+(i++)}/>))
     }
 
     return (
         <>
+            {/* Unclickable Link to trigger prefetching for the image page. */}
+            <Link to="/images/" ></Link>
+
             <div className="grid">
                 {items}
             </div>

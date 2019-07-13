@@ -28,6 +28,7 @@ class PostcardTemplate extends React.Component {
     this.zIndexes = this.zIndexes()
 
     this.state = {
+      pageContext: this.getFromPassedStateOrDefault("pageContext", this.props.pageContext), /* Explained in README. */
       currentImageLoaded: this.getFromPassedStateOrDefault("currentImageLoaded", false),
       isFullScreen: this.getFromPassedStateOrDefault("isFullScreen", false),
       nextImageLoaded: this.getFromPassedStateOrDefault("nextImageLoaded", false),
@@ -70,7 +71,10 @@ class PostcardTemplate extends React.Component {
   }
 
   fullScreenChangeHandler() {
-    /* This exists to detect changes in full screen initiated with browser functions (as opposed to our fullscreen icon). */
+    /* This exists to detect changes in full screen initiated with browser functions (as opposed to our fullscreen icon).
+     * Note that we still need functions enterFullScreenAndRender and exitFullScreenAndRender.
+     * Even though this does the same thing, devices are usually slow to enter/exit full screen mode,
+     * so if we immediately render a change in icon, the user doesn't feel like something is broken. */
     if (!document) return
     if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
       this.exitFullScreenAndRender()
@@ -82,16 +86,28 @@ class PostcardTemplate extends React.Component {
   handleKeyDown = (event) => {
     if (event.keyCode === 37) {
       /* Left arrow. */
-      navigate(`/images/${this.props.pageContext.prevId}`, { state: this.getStatePassForPrev() })
+      navigate(`/images/${this.state.pageContext.prevId}`, { state: this.getStatePassForPrev() })
     } else if (event.keyCode === 39) {
       /* Right arrow. */
-      navigate(`/images/${this.props.pageContext.nextId}`, { state: this.getStatePassForNext() })
+      navigate(`/images/${this.state.pageContext.nextId}`, { state: this.getStatePassForNext() })
     }
+  }
+
+  useOfQueryParams() {
+    return typeof window !== 'undefined' && window && window.location.href.includes("/images/?id=")
+  }
+
+  legitUseOfQueryParams() {
+    return (this.useOfQueryParams() && this.getFromPassedStateOrDefault("pageContext"))
+  }
+
+  illegitUseOfQueryParams() {
+    return (this.useOfQueryParams() && !this.getFromPassedStateOrDefault("pageContext"))
   }
 
   componentDidMount() {
     /* Keyboard listener for arrow key navigation. */
-    if (typeof document !== 'undefined' && document.addEventListener) {
+    if (typeof document !== 'undefined' && document.addEventListener && this.state.pageContext) {
       document.addEventListener("keydown", this.handleKeyDown)
     }
 
@@ -104,7 +120,37 @@ class PostcardTemplate extends React.Component {
     }
   }
 
+  componentWillMount() {
+     if (this.illegitUseOfQueryParams()) {
+      /* Safeguard against the (unlikely) case where someone uses /images?id=... as an entry-point to the site. */
+      const id = window.location.href.split("/images/?id=")[1]
+      navigate(
+        `/images/${id}`,
+        {
+          replace: true
+        }
+      )
+    }
+  }
+
   currentImageLoaded() {
+    if (this.legitUseOfQueryParams()) {
+      /* Navigate to "shareable" URL which renders the same DOM. More info in README. */
+      const id = window.location.href.split("/images/?id=")[1]
+      navigate(
+        `/images/${id}`,
+        {
+          state: {
+            currentImageLoaded: false, // Has to be false initially to trigger the placeholder transition.
+            isFullScreen: this.state.isFullScreen,
+            pageContext: this.state.pageContext
+          },
+          replace: true
+        }
+      )
+      return
+    }
+
     /* Trigger re-render, start possible transition. */
     this.setState({
       currentImageLoaded: true
@@ -156,7 +202,7 @@ class PostcardTemplate extends React.Component {
   }
 
   render () {
-    const c = this.props.pageContext
+    const c = this.state.pageContext
 
     return (
       <>
@@ -208,10 +254,10 @@ class PostcardTemplate extends React.Component {
 
                   {/* Navbuttons: prev/next (even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
                   <Link to={`/images/${c.prevId}`} state={this.getStatePassForPrev()} >
-                    <FaArrowLeft className="arrowButtons" style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Previous image" />
+                    <FaArrowLeft className="arrowButtons" style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Edellinen kuva" />
                   </Link>
                   <Link to={`/images/${c.nextId}`} state={this.getStatePassForNext()} >
-                    <FaArrowRight className="arrowButtons" style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next image" />
+                    <FaArrowRight className="arrowButtons" style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Seuraava kuva" />
                   </Link>
 
                   {/* Flash cues for small screens instead of sticking prev/next buttons. */}
@@ -221,7 +267,7 @@ class PostcardTemplate extends React.Component {
                  
                   {/* Navbutton: Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
-                    <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} title="Back to Gallery" >
+                    <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} title="Takaisin Galleriaan" >
                       <FaTimesCircle style={{ right: "10px", top: "10px" }} />
                     </Link>
                   </span>
@@ -229,17 +275,17 @@ class PostcardTemplate extends React.Component {
                   {/* Navbutton: Fullscreen toggle. */}
                   <span className="fullscreen">
                     {this.state.isFullScreen && (
-                      <FaCompress style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Exit full screen mode" onClick={this.exitFullScreenAndRender} />
+                      <FaCompress style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Laajenna koko näytölle" onClick={this.exitFullScreenAndRender} />
                     )}
                     {!this.state.isFullScreen && (
-                      <FaExpand style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Enter full screen mode" onClick={this.enterFullScreenAndRender} />
+                      <FaExpand style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Poistu koko näytön tilasta" onClick={this.enterFullScreenAndRender} />
                     )}
                   </span>
 
                   {/* Navbutton: Download image. */}
                   <span className="download">
                     <a href={c.image.fluid.originalImg} download >
-                      <FaDownload style={{ right: "80px", bottom: "12px" }} title="Download image" />
+                      <FaDownload style={{ right: "80px", bottom: "12px" }} title="Lataa kuva" />
                     </a>
                   </span>
 

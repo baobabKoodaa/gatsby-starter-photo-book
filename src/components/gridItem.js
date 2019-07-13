@@ -1,8 +1,20 @@
 import React from "react"
-import { Link } from "gatsby"
+import { navigate } from "gatsby"
 //import theme from "../theme.yaml"
 
 class GridItem extends React.Component {
+
+    handleNavigation(e) {
+        /* This unconventional navigation is explained in README. */
+        navigate(
+            `/images/?id=${this.props.item.id}`,
+            {
+                state: { pageContext: this.props.item.pageContext }
+            }
+        )
+        e.preventDefault()
+        return false;
+    }
 
     render() {
         const props = this.props
@@ -21,9 +33,9 @@ class GridItem extends React.Component {
                               * Do not refactor the hidden dot away or Firefox will set scroll position to the _bottom_ of img instead of top.
                               */}
                             <span id={`id${props.item.id}`} style={{ top: "0px", position: "absolute", display: "hidden" }} >.</span>
-                            <Link to={`/images/${props.item.id}`} >
+                            <a href={`/images/${props.item.id}`} onClick={(e) => this.handleNavigation(e)} >
                                 <img src={props.item.thumb.src} alt="" title="" />
-                            </Link>
+                            </a>
                         </>
                     )}
                     
