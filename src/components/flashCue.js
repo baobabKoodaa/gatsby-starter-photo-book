@@ -49,8 +49,6 @@ export class FlashCue extends React.Component {
                                 font-size: 20px;
                                 animation: flash 4s linear;
                                 z-index: ${this.zIndex};
-
-
                             }
 
                             @media only screen and (max-width: 1200px) {
@@ -58,10 +56,22 @@ export class FlashCue extends React.Component {
                                     0%, 100% {
                                         opacity: 0;
                                         transform: scale(1);
+                                        -webkit-filter: blur(3px);
+                                        -moz-filter: blur(3px);
+                                        -o-filter: blur(3px);
+                                        -ms-filter: blur(3px); 
+                                        filter: blur(3px);
+                                        filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
                                     }
                                     50% {
                                         opacity: 1;
                                         transform: scale(2);
+                                        -webkit-filter: blur(0px);
+                                        -moz-filter: blur(0px);
+                                        -o-filter: blur(0px);
+                                        -ms-filter: blur(0px); 
+                                        filter: blur(0px);
+                                        filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='0');
                                     }
                                 }
                             }
