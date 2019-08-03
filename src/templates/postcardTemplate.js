@@ -114,7 +114,7 @@ class PostcardTemplate extends React.Component {
 
   componentWillMount() {
      if (this.useOfQueryParams() && !this.getFromPassedStateOrDefault("pageContext")) {
-      /* Safeguard against the (unlikely) case where someone uses /images?id=... as an entry-point to the site. */
+      /* Safeguard against the (unlikely) case where someone uses /images/fromGallery?id=... as an entry-point to the site. */
       const id = window.location.href.split("/images/fromGallery?id=")[1]
       navigate(
         `/images/${id}`,
