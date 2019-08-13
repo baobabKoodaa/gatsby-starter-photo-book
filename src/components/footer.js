@@ -11,14 +11,14 @@ export default class Footer extends React.Component {
         this.textPhotographer = 
             <p style={{ maxWidth: "400px", color: "black" }}>
                 <a href={config.linkPhotographer} target="_blank" rel="noopener noreferrer">
-                    Hannu Tiainen
-                </a> oli mahtava valokuvaajamme. Osa sivulla näkyvistä kuvista on myös ihanien vieraidemme ottamia. Jos mietit yksittäisen kuvan alkuperää, saat joitakin tietoja pitämällä hiirtä suurikokoisen kuvan päällä.
+                    Mr Photographer
+                </a> was our wonderful photographer. We also added some photos taken by our lovely guests; hover over the images to see attribution.
             </p>
 
         this.textDownload = 
             <p style={{ maxWidth: "400px", color: "black" }}>
-                Voit ladata yksittäisiä kuvia avaamalla kuvan ja painamalla kuvan alla näkyvää latauspainiketta. Jos haluat ladata kaikki kuvat ZIP-pakettina,
-                paina <a href={config.linkPhotoset} target="_blank" rel="noopener noreferrer">tästä</a>.
+                You can download individual photos by clicking the button under the photos. If you wish to download the entire set,
+                click <a href={config.linkPhotoset} target="_blank" rel="noopener noreferrer">here</a>.
             </p>
 
 		this.state = {
@@ -51,11 +51,11 @@ export default class Footer extends React.Component {
                 <center>
                     <div>
                         <span onClick={() => this.handleTextChange(this.textDownload)} style={{ cursor: "pointer" }}>
-                            Lataa kuvat 
+                            Download photos
                         </span> | <a href={config.linkSource} target="_blank" rel="noopener noreferrer">
-                            Sivun lähdekoodi
+                            Website source
                         </a> | <span onClick={() => this.handleTextChange(this.textPhotographer)} style={{ cursor: "pointer" }}>
-                            Kameran takana
+                            Behind the camera
                         </span>
                         {this.state.showMoreText}
                     </div>

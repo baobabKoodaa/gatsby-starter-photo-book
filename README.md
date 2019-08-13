@@ -2,6 +2,8 @@
   :camera: Gatsby Starter Photo Book :camera:
 </h1>
 
+Have a peek at this [demo](https://gatsby-starter-photo-book.netlify.com).
+
 ## :notebook: Key features
 
 - **Gallery**: auto-generated thumbnails are presented on **CSS Grid** with **infinite scroll**.

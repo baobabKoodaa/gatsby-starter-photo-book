@@ -1,8 +1,7 @@
 module.exports = {
-  pathPrefix: "/kuvat/",
   siteMetadata: {
     title: `Gatsby Starter Photo Book`,
-    description: `A Gatsby starter for sharing photosets.`,
+    description: `Share your photosets with style.`,
     author: `baobabKoodaa`,
   },
   plugins: [
