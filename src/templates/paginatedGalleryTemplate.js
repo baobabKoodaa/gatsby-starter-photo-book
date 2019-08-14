@@ -20,7 +20,7 @@ class PaginatedGalleryTemplate extends React.Component {
         return (<>
                 <Helmet>
                     <meta charSet="utf-8" />
-                    <title>Atte ja Marianne 11.5.2019</title>
+                    <title>Gatsby Starter Photo Book</title>
                 </Helmet>
                 <GlobalStateContext.Consumer>
                     {globalState => (
