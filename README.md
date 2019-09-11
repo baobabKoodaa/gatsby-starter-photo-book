@@ -71,13 +71,14 @@ In addition, gallery's infinite scroll:
 
 - Chrome on Android sometimes shows the address bar, sometimes doesn't (depends on whether the user last scrolled upwards or downwards in gallery). When the address bar is hidden, extra space appears in the bottom that the photo doesn't utilize. This happens because the photo and all its parents have `100%` height. An alternative is to use `100vh` height, but that's worse, because then the bottom part of photos is 'cut off' when the address bar is visible (unless the user realizes they need to scroll down). If the user enters the postcard view without address bar, they can scroll up to make the address bar visible. If the address bar is fully visible, the user can not scroll down to hide the address bar. I was unable to resolve the issue properly so as a workaround I added a full screen toggle for small screens. It works nicely.
 - Sometimes cornerCaseHandler tries to initiate fetches to pages that don't exist. I've had difficulty reproducing this, but I've seen it twice. There's no harm from doing these fetches so I've just supressed the errors from them for now.
+- Updating Gatsby-related dependencies causes placeholder SVGs to misalign. It is somehow related to a change in how Gatsby generates SVGs (after updating, they no longer contain a viewBox attribute, and they scale incorrectly).
 
 ## 🎓 Attribution
 
 Hi, I'm Atte and I created this because I wanted to share our wedding photos on a fast & beautiful user-friendly website. This is a fork of my other project [Gatsby Starter Infinite Scroll](https://github.com/baobabKoodaa/gatsby-starter-infinite-scroll), which is more of a general purpose starter whereas this one is specialized for sharing photosets. 
 
 - My wife Marianne was integral in the design.
+- Images are from [Unsplash](https://unsplash.com).
 - Icons are from [FontAwesome](https://www.fontawesome.com).
 - Infinite scroll uses some code from Jared Palmer's [react-simple-infinite-scroll](https://github.com/jaredpalmer/react-simple-infinite-scroll).
 - Gallery CSS Grid is modified from work by [LekoArts](https://www.lekoarts.de/).
-- I will create a demo site with photos from [Unsplash](https://unsplash.com).
