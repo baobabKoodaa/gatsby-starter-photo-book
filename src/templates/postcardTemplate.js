@@ -229,10 +229,10 @@ class PostcardTemplate extends React.Component {
 
                   {/* Navbuttons: prev/next (even though clicking anywhere on the page works, we want to help the user understand what they can do). */}
                   <Link to={`/images/${c.prevId}`} state={this.getStatePassForPrev()} >
-                    <FaArrowLeft className="arrowButtons" style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Edellinen kuva" />
+                    <FaArrowLeft className="arrowButtons" style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }} title="Previous photo" />
                   </Link>
                   <Link to={`/images/${c.nextId}`} state={this.getStatePassForNext()} >
-                    <FaArrowRight className="arrowButtons" style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Seuraava kuva" />
+                    <FaArrowRight className="arrowButtons" style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next photo" />
                   </Link>
 
                   {/* Flash cues for small screens instead of sticking prev/next buttons. */}
@@ -242,7 +242,7 @@ class PostcardTemplate extends React.Component {
                  
                   {/* Navbutton: Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
-                    <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} title="Takaisin Galleriaan" >
+                    <Link to={`/#id${c.image.id}`} state={{ highlight: c.image.id }} title="Back to Gallery" >
                       <FaTimesCircle style={{ right: "10px", top: "10px" }} />
                     </Link>
                   </span>
@@ -250,17 +250,17 @@ class PostcardTemplate extends React.Component {
                   {/* Navbutton: Fullscreen toggle. */}
                   <span className="fullscreen">
                     {this.state.isFullScreen && (
-                      <FaCompress style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Laajenna koko näytölle" onClick={this.exitFullScreenAndRender} />
+                      <FaCompress style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Exit full screen mode" onClick={this.exitFullScreenAndRender} />
                     )}
                     {!this.state.isFullScreen && (
-                      <FaExpand style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Poistu koko näytön tilasta" onClick={this.enterFullScreenAndRender} />
+                      <FaExpand style={{ right: "10px", bottom: "10px", cursor: "pointer" }} title="Enter full screen mode" onClick={this.enterFullScreenAndRender} />
                     )}
                   </span>
 
                   {/* Navbutton: Download image. */}
                   <span className="download">
                     <a href={c.image.fluid.originalImg} download >
-                      <FaDownload style={{ right: "80px", bottom: "12px" }} title="Lataa kuva" />
+                      <FaDownload style={{ right: "80px", bottom: "12px" }} title="Download photo" />
                     </a>
                   </span>
 
