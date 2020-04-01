@@ -75,12 +75,10 @@ class View extends React.Component {
                         font-size: 60px;
                         text-align: center;
                         display: ${g.useInfiniteScroll ? "block" : "none" };
-
-                        :global(svg) {
-                            fill: ${theme.color.brand.primaryLight};
-                            animation: spinner 3s linear infinite;
-                        }
-                        
+                    }
+                    .spinner :global(svg) {
+                        fill: ${theme.color.brand.primaryLight};
+                        animation: spinner 3s linear infinite;
                     }
                     `}
                 </style>

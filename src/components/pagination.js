@@ -70,10 +70,8 @@ const Pagination = props => {
 
             </div>
             <style jsx>{`
-                .next-arrow {
-                    :global(svg) {
-                        margin-left: 10px !important;
-                    }
+                .next-arrow :global(svg) {
+                    margin-left: 10px !important;
                 }
 
                 .pagination-numbers:hover {
@@ -90,29 +88,24 @@ const Pagination = props => {
                     padding: ${theme.space.l} ${theme.space.l} ${theme.space.l};
                     margin: ${theme.space.stack.l};
                     margin-bottom: 0;
-
-                    :global(a:nth-child(2)) {
-                        margin: 0;
-                    }
-
-                    :global(svg) {
-                        fill: ${theme.color.special.attention};
-                        width: ${theme.space.m};
-                        height: ${theme.space.m};
-                        flex-shrink: 0;
-                        flex-grow: 0;
-                        transition: all 0.5s;
-                        margin: ${theme.space.inline.s};
-                    }
                 }
-            
 
-                @from-width desktop {
-                    @media (hover: hover) {
-                        .pagination :global(a:hover svg) {
-                            transform: scale(1.5);
-                        }
-                    }
+                .pagination :global(a:nth-child(2)) {
+                    margin: 0;
+                }
+
+                .pagination :global(svg) {
+                    fill: ${theme.color.special.attention};
+                    width: ${theme.space.m};
+                    height: ${theme.space.m};
+                    flex-shrink: 0;
+                    flex-grow: 0;
+                    transition: all 0.5s;
+                    margin: ${theme.space.inline.s};
+                }
+
+                @from-width desktop @media (hover: hover) .pagination :global(a:hover svg) {
+                    transform: scale(1.5);
                 }
             `}
             </style>
