@@ -6,7 +6,6 @@ import { FaTimesCircle, FaArrowLeft, FaArrowRight, FaExpand, FaCompress, FaDownl
 import { GlobalStateContext } from "../components/globalState.js"
 import { CornerCaseHandler } from "../components/cornerCaseHandler.js"
 import { enterFullScreen, exitFullScreen } from "../util/fullScreenHelpers.js"
-import { FlashCue } from "../components/flashCue.js"
 
 class PostcardTemplate extends React.Component {
 
@@ -48,7 +47,6 @@ class PostcardTemplate extends React.Component {
     z["prefetchedImages"] = next++
     z["currentImagePlaceholder"] = next++
     z["currentImage"] = next++
-    z["flashCue"] = next++
     z["invisibleLinks"] = next++
     z["navButtons"] = next++
     return z
@@ -234,11 +232,6 @@ class PostcardTemplate extends React.Component {
                   <Link to={`/images/${c.nextId}`} state={this.getStatePassForNext()} >
                     <FaArrowRight className="arrowButtons" style={{ right: "10px", top: "50%", transform: "translateY(-50%)" }} title="Next photo" />
                   </Link>
-
-                  {/* Flash cues for small screens instead of sticking prev/next buttons. */}
-                  {this.state.currentImageLoaded && (
-                    <FlashCue g={globalState} additionalWait={this.placeholderTransitionDuration} zIndex={this.zIndexes["flashCue"]} />
-                  )}
                  
                   {/* Navbutton: Top right 'x' to 'close' the image and return to gallery. */}
                   <span className="x">
@@ -364,20 +357,22 @@ class PostcardTemplate extends React.Component {
                           bottom: 3%;
                           max-height: 94%;
                           max-width: 90%;
+                        }
 
-                          @media only screen and (max-width: 1200px) {
+                        @media only screen and (max-width: 1200px) {
+                          img {
                             left: 0px;
                             right: 0px;
                             top: 0px;
                             bottom: 0px;
                             max-height: 100%;
                             max-width: 100%;
-
+  
                             -webkit-box-shadow: 0 0 0 0 !important;
                             -moz-box-shadow: 0 0 0 0 !important;
                             box-shadow: 0 0 0 0 !important;
                           }
-
+                          
                         }
 
                         .decoratedImage {
@@ -406,8 +401,8 @@ class PostcardTemplate extends React.Component {
                           z-index: ${this.zIndexes["prefetchedImages"]}
                         }
 
-                        :global(.arrowButtons) {
-                          @media only screen and (max-width: 1200px) {
+                        @media only screen and (max-width: 1200px) {
+                          :global(.arrowButtons) {
                             visibility: hidden;
                           }
                         }

@@ -14,7 +14,6 @@ export const GlobalStateContext = React.createContext({
     updateState: () => {},
     hasMore: () => {},
     loadMore: () => {},
-    flashCueShown: false
 });
 
 export class GlobalState extends React.Component {
@@ -36,7 +35,6 @@ export class GlobalState extends React.Component {
             hasMore: this.hasMore,
             loadMore: this.loadMore,
             initialRender: true,
-            flashCueShown: false
         }
     }
 

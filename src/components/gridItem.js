@@ -80,12 +80,12 @@ class GridItem extends React.Component {
                             border: 1px solid gray;
                             transition: 0.2s ease-in-out;
                             z-index: 2;
-    
                             opacity: 1;
-                            :hover {
-                                opacity: 0.4;
-                                transform: scale(1.1);
-                            }
+                        }
+
+                        .img-container img :hover {
+                            opacity: 0.4;
+                            transform: scale(1.1);
                         }
                     `}
                 </style>

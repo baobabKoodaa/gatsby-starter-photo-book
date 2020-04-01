@@ -62,13 +62,14 @@ const Grid = (props) => {
 
                     @media (max-width: 950px) {
                         .grid {
-                          grid-template-columns: 1fr 1fr 1fr;
+                            grid-template-columns: 1fr 1fr 1fr;
                         }
+                        
                     }
 
                     @media (max-width: 300px) {
                         .grid {
-                          grid-template-columns: 1fr;
+                            grid-template-columns: 1fr;
                         }
                     }
                 `}
