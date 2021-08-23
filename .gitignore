@@ -1,5 +1,5 @@
 temp/*
-content/images/*
+#content/images/*
 
 # Logs
 logs
