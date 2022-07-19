@@ -85,7 +85,7 @@ exports.createPages = ({ graphql, actions}) => {
 
         /* Create pageContexts for each image. */
         const pageContexts = []
-        for (var currId=1; currId<nextFreeId; currId++) {
+        for (let currId=1; currId<nextFreeId; currId++) {
             const prevId = (currId == 1 ? nextFreeId-1 : currId-1)
             const nextId = (currId == nextFreeId-1 ? 1 : currId+1)
             const next2Id = (nextId == nextFreeId-1 ? 1 : nextId+1)
@@ -102,7 +102,7 @@ exports.createPages = ({ graphql, actions}) => {
         /* Create pagination for gallery (which is also used by infinite scroll). */
         const countImagesPerPage = 20
         const countPages = Math.ceil(nextFreeId / countImagesPerPage)
-        for (var currentPage=1; currentPage<=countPages; currentPage++) {
+        for (let currentPage=1; currentPage<=countPages; currentPage++) {
             /* Create paths "/", "/2", "/3", ... */
             const pathSuffix = (currentPage>1? currentPage : "")
 
@@ -136,7 +136,7 @@ exports.createPages = ({ graphql, actions}) => {
         console.log(`\nCreated ${countPages} pages of paginated content.`)
 
         /* Create pages for images, too. */
-        for (var currId=1; currId<nextFreeId; currId++) {
+        for (let currId=1; currId<nextFreeId; currId++) {
             const pageData = {
                 path: `/images/${currId}`, 
                 component: path.resolve(`src/templates/postcardTemplate.js`),
