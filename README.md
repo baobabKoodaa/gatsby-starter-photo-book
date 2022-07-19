@@ -13,23 +13,24 @@
 
 ## :zap: Get started
 
-1. Fork and `npm install`.
-2. Drop your photos in `content/images`.
-3. Run in dev mode with `gatsby develop`.  
-...and you're all set! (Ok you probably want to edit some text, colors, favicon, etc. - but almost done!)
+1. Prerequisite: Node v16 (for example, you can use nvm to switch between Node versions)
+2. Prerequisite: gatsby-cli v4 globally installed (`npm install -g gatsby-cli@latest-v4`)
+3. Install deps: `npm install`
+4. Drop your photos in `content/images`.
+5. Run in dev mode with `gatsby develop`
 
 ## :gem: UX
 
 - Friendly to users who have disabled JS. All important features are either designed to work entirely without JS or have **non JS fallback**. For example, infinite scroll **gracefully degrades** into pagination.
 - When the user clicks on an image from the gallery, we immediately render a **prefetched page** with a **tracedSVG placeholder** stylized into the site's theme, and **fade-over transition** into the actual photo once it has been downloaded.
 - When the user navigates between photos in postcard view, we either:
-    - Snap to the next photo if it has been downloaded
-    - Or snap to placeholder and transition into the photo when it's downloaded.
+  - Snap to the next photo if it has been downloaded
+  - Or snap to placeholder and transition into the photo when it's downloaded.
 - **No flicker** when the user navigates between photos (this was actually _very_ difficult to implement without sacrificing pre-rendered pages that work without JS and without sacrificing placeholder images).
 - When the user clicks 'x' to return from postcard view to gallery, **scroll position** is set to the thumbnail of the last photo they viewed and a visual indicator is given to help the user adjust their sight to the next unseen photo. This is better than simply remembering scroll position, because a user can browse several photos in postcard view before returning to gallery (in that case we want to scroll to the last thumbnail, not the first). This feature degrades gracefully if the user navigates with the browser's back button instead of clicking 'x' (in that case, we just remember the scroll position).
 - The postcard view is **slightly different on small vs large screens**:
-    - Large screens: the photo is decorated like a postcard in the center of the screen with buttons usually outside the photo.
-    - Small screens: maximum screen real estate for photos. Reduced decoration. Buttons can overlay on the photo, but the most obtrusive buttons (prev/next) are hidden. When the user first navigates to an image, they are flashed a visual cue to indicate that they can navigate to prev/next by clicking anywhere. The cue is flashed again if the user returns to the site later, but it is not flashed again during the same session.
+  - Large screens: the photo is decorated like a postcard in the center of the screen with buttons usually outside the photo.
+  - Small screens: maximum screen real estate for photos. Reduced decoration. Buttons can overlay on the photo, but the most obtrusive buttons (prev/next) are hidden. When the user first navigates to an image, they are flashed a visual cue to indicate that they can navigate to prev/next by clicking anywhere. The cue is flashed again if the user returns to the site later, but it is not flashed again during the same session.
 - You can tell a story with your images, because the gallery has **row-based order** (many other photo website implementations use column-based order, e.g. masonry CSS, which looks great, but causes the order of images to feel random to users who are used to scanning photos horizontally.)
 
 ## :cyclone: Performance
@@ -59,6 +60,7 @@ You may notice there are two kinds of paths to photos: `/images/58` and `/images
 ---
 
 In addition, gallery's infinite scroll:
+
 - Loads more items _before_ you scroll all the way down to look at loading spinners or blur-ups.
 - Fetches metadata ~20 items at a time (as opposed to fetching _all_ metadata at initial page load, like many other implementations do).
 - The first ~20 items are delivered with the initial page without waiting for metadata fetches.
@@ -75,7 +77,7 @@ In addition, gallery's infinite scroll:
 
 ## 🎓 Attribution
 
-Hi, I'm Atte and I created this because I wanted to share our wedding photos on a fast & beautiful user-friendly website. This is a fork of my other project [Gatsby Starter Infinite Scroll](https://github.com/baobabKoodaa/gatsby-starter-infinite-scroll), which is more of a general purpose starter whereas this one is specialized for sharing photosets. 
+Hi, I'm Atte and I created this because I wanted to share our wedding photos on a fast & beautiful user-friendly website. This is a fork of my other project [Gatsby Starter Infinite Scroll](https://github.com/baobabKoodaa/gatsby-starter-infinite-scroll), which is more of a general purpose starter whereas this one is specialized for sharing photosets.
 
 - My wife Marianne was integral in the design.
 - Images are from [Unsplash](https://unsplash.com).

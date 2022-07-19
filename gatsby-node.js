@@ -73,6 +73,9 @@ exports.createPages = ({ graphql, actions}) => {
                 "thumb": thumb,
                 "title": title
             }
+
+            images[nextFreeId].fluid.tracedSVG = images[nextFreeId].fluid.tracedSVG.replace("preserveAspectRatio='none'", "")
+
             nextFreeId++
         })
 

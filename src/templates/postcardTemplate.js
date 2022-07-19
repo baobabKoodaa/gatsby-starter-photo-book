@@ -367,12 +367,11 @@ class PostcardTemplate extends React.Component {
                             bottom: 0px;
                             max-height: 100%;
                             max-width: 100%;
-  
+
                             -webkit-box-shadow: 0 0 0 0 !important;
                             -moz-box-shadow: 0 0 0 0 !important;
                             box-shadow: 0 0 0 0 !important;
                           }
-                          
                         }
 
                         .decoratedImage {
@@ -392,7 +391,7 @@ class PostcardTemplate extends React.Component {
                         }
 
                         .fade-out {
-                          opacity: 0;
+                          opacity: 0.5;
                           transition: ${this.placeholderTransitionDuration}ms step-end;
                         }
 
