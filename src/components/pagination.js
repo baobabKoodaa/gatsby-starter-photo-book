@@ -104,7 +104,7 @@ const Pagination = props => {
                     margin: ${theme.space.inline.s};
                 }
 
-                @from-width desktop @media (hover: hover) .pagination :global(a:hover svg) {
+                .pagination :global(a:hover svg) {
                     transform: scale(1.5);
                 }
             `}
