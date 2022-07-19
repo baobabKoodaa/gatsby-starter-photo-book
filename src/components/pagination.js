@@ -13,7 +13,7 @@ const Pagination = props => {
     const nextPage = "/" + (currentPage + 1);
     const verticalAlignment = { paddingTop: "0.25em" }
 
-    var visiblePageNumbers = selectRelevantPageLinks(currentPage, countPages)
+    let visiblePageNumbers = selectRelevantPageLinks(currentPage, countPages)
 
     return (
         <React.Fragment>
@@ -114,7 +114,7 @@ const Pagination = props => {
 }
 
 function selectRelevantPageLinks(currentPage, countPages) {
-    var visiblePageNumbers = []
+    let visiblePageNumbers = []
     if (countPages <= 10) {
         /* If there are not too much, show everything. */
         for (let i=1; i<=countPages; i++) {

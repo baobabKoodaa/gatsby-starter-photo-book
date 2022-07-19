@@ -43,7 +43,7 @@ class PostcardTemplate extends React.Component {
   zIndexes() {
     /* Doing it like this to reduce hidden dependencies. */
     const z = {}
-    var next = 1
+    let next = 1
     z["prefetchedImages"] = next++
     z["currentImagePlaceholder"] = next++
     z["currentImage"] = next++

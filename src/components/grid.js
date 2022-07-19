@@ -8,10 +8,12 @@ const Grid = (props) => {
     const currentPage = props.pageContext.currentPage
     
     const items = []
-    var i = 0, j = 0 , numberOfItemsOnLatestPage = 0
+    let i = 0
+    let j = 0
+    let numberOfItemsOnLatestPage = 0
     const js = !g.isInitializing()
     if (g.useInfiniteScroll && g["page"+currentPage]) {
-        for (var pageNum=currentPage ;; pageNum++) {
+        for (let pageNum=currentPage ;; pageNum++) {
             const key = "page"+pageNum
             if (g[key]) {
                 /* Add gridItems that we have received metadata for. */

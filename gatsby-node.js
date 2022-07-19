@@ -52,7 +52,7 @@ exports.createPages = ({ graphql, actions}) => {
         })
 
         /* Create metadata JSON for actual images. */
-        var nextFreeId = 1
+        let nextFreeId = 1
         images = []
         imageEdges.forEach(edge => {
             const name = parseName(edge.node.absolutePath)
@@ -74,6 +74,7 @@ exports.createPages = ({ graphql, actions}) => {
                 "title": title
             }
 
+            /* Fix SVG placeholder alignment issue caused by change in Gatsby internals when upgrading deps. */
             images[nextFreeId].fluid.tracedSVG = images[nextFreeId].fluid.tracedSVG.replace("preserveAspectRatio='none'", "")
 
             nextFreeId++
