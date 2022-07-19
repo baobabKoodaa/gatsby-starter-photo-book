@@ -13,11 +13,10 @@
 
 ## :zap: Get started
 
-1. Prerequisite: Node v16 (for example, you can use nvm to switch between Node versions)
-2. Prerequisite: gatsby-cli v4 globally installed (`npm install -g gatsby-cli@latest-v4`)
-3. Install deps: `npm install`
-4. Drop your photos in `content/images`.
-5. Run in dev mode with `gatsby develop`
+- Prerequisite: Node v16 (for example, you can use nvm to switch between Node versions)
+- Prerequisite: gatsby-cli v4 globally installed (`npm install -g gatsby-cli@latest-v4`)
+- Install deps: `npm install`
+- Run in dev mode with `gatsby develop`
 
 ## :gem: UX
 
@@ -30,7 +29,7 @@
 - When the user clicks 'x' to return from postcard view to gallery, **scroll position** is set to the thumbnail of the last photo they viewed and a visual indicator is given to help the user adjust their sight to the next unseen photo. This is better than simply remembering scroll position, because a user can browse several photos in postcard view before returning to gallery (in that case we want to scroll to the last thumbnail, not the first). This feature degrades gracefully if the user navigates with the browser's back button instead of clicking 'x' (in that case, we just remember the scroll position).
 - The postcard view is **slightly different on small vs large screens**:
   - Large screens: the photo is decorated like a postcard in the center of the screen with buttons usually outside the photo.
-  - Small screens: maximum screen real estate for photos. Reduced decoration. Buttons can overlay on the photo, but the most obtrusive buttons (prev/next) are hidden. When the user first navigates to an image, they are flashed a visual cue to indicate that they can navigate to prev/next by clicking anywhere. The cue is flashed again if the user returns to the site later, but it is not flashed again during the same session.
+  - Small screens: maximum screen real estate for photos. Reduced decoration. Buttons can overlay on the photo, but the most obtrusive buttons (prev/next) are hidden.
 - You can tell a story with your images, because the gallery has **row-based order** (many other photo website implementations use column-based order, e.g. masonry CSS, which looks great, but causes the order of images to feel random to users who are used to scanning photos horizontally.)
 
 ## :cyclone: Performance
