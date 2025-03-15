@@ -2,7 +2,7 @@
   :camera: Gatsby Starter Photo Book :camera:
 </h1>
 
-»»» [Live demo](https://gatsby-starter-photo-book.netlify.com) «««
+»»» [Live demo](https://gatsby-starter-photo-book.netlify.app) «««
 
 ## :notebook: Key features
 
